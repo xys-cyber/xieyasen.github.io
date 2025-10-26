@@ -1,0 +1,739 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Lochner v. New York (1905) — Interactive Learning</title>
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome (icons) -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Noto+Serif+SC:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      /* C 奶咖 日间 */
+      --bg: #FFFDF9;
+      --surface: #FFFFFF;
+      --text: #2A2A2A;
+      --muted: #6B6B6B;
+      --accent: #C89B6C;
+      --accent-contrast: #ffffff;
+      --card-shadow: 0 6px 20px rgba(20,18,16,0.06);
+    }
+    [data-theme="dark"]{
+      /* C-dark 夜间 */
+      --bg: #1C1B19;
+      --surface: #262422;
+      --text: #EAE2D6;
+      --muted: #BFB3A3;
+      --accent: #C89B6C;
+      --accent-contrast: #1C1B19;
+      --card-shadow: 0 6px 20px rgba(0,0,0,0.6);
+    }
+
+    html,body{
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Serif SC", "Noto Serif", sans-serif;
+      height: 100%;
+    }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .surface {
+      background: var(--surface);
+      box-shadow: var(--card-shadow);
+      border-radius: 12px;
+    }
+
+    /* Header */
+    .site-title { font-weight: 700; letter-spacing: -0.02em; }
+    .site-sub { color: var(--muted); }
+
+    /* Accent buttons */
+    .btn-accent {
+      background: var(--accent);
+      color: var(--accent-contrast);
+      border: none;
+    }
+    .btn-accent-outline {
+      color: var(--accent);
+      border-color: rgba(0,0,0,0.06);
+      background: transparent;
+    }
+
+    /* Left nav */
+    #sideNav {
+      top: 110px;
+    }
+
+    /* Back to top */
+    #backTop {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      z-index: 999;
+      display: none;
+      border-radius: 50%;
+      width: 48px;
+      height: 48px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+    }
+
+    /* Highlighting */
+    .highlight {
+      background: rgba(200,155,108,0.18);
+      border-radius: 4px;
+      padding: 0 2px;
+    }
+
+    /* Bilingual split */
+    .bilingual-split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+    .bilingual-split .col-left{ overflow-wrap: anywhere; }
+    .bilingual-split .col-right{ opacity: 0.95; }
+
+    /* Glossary table */
+    .glossary-term { cursor: pointer; color: var(--accent); font-weight: 600; }
+    .glossary-term:hover { text-decoration: underline; }
+
+    /* small screens */
+    @media (max-width: 991px) {
+      #sideNav { position: static; transform: none; }
+      .bilingual-split { grid-template-columns: 1fr; }
+    }
+
+    /* subtle transitions */
+    .trans { transition: all .18s ease; }
+  </style>
+</head>
+<body>
+
+  <!-- Topbar -->
+  <nav class="navbar navbar-expand-lg surface p-3 shadow-sm sticky-top">
+    <div class="container-fluid">
+      <div class="d-flex align-items-center">
+        <div class="me-3">
+         <h1 class="h4 site-title mb-0">设计者：解雅森</h1>
+         <div class="site-sub small">Lochner v. New York (1905) — Interactive Learning</div>
+  </div>
+</div>
+      <div class="d-flex ms-auto gap-2 align-items-center">
+        <!-- Bilingual Mode -->
+        <div class="btn-group" role="group" aria-label="Display mode">
+          <button id="modeEnglish" class="btn btn-sm btn-outline-secondary">English</button>
+          <button id="modeBilingual" class="btn btn-sm btn-outline-secondary">双语</button>
+          <button id="modeChinese" class="btn btn-sm btn-outline-secondary">中文</button>
+        </div>
+
+        <!-- Theme toggle -->
+        <button id="themeToggle" class="btn btn-sm btn-accent trans" title="Toggle theme">
+          <i id="themeIcon" class="fa-solid fa-moon"></i>
+        </button>
+
+        <!-- AI 释义助手 (占位，可接API扩展) -->
+        <button id="aiAssist" class="btn btn-sm btn-outline-secondary" title="AI 释义助手">
+          <i class="fa-solid fa-robot"></i> 释义助手
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container-fluid mt-4">
+    <div class="row">
+      <!-- Side navigation (collapses on small screens) -->
+      <nav id="sideNav" class="col-lg-3 d-none d-lg-block">
+        <div class="surface p-3 position-sticky" style="top:110px;">
+          <h5 class="mb-3">目录导航</h5>
+          <nav class="nav flex-column" id="toc">
+            <a class="nav-link" href="#design">1. 设计工具、方法、过程（中文）</a>
+            <a class="nav-link" href="#elements">2. Elements of a Judicial Opinion (English)</a>
+            <a class="nav-link" href="#glossary">3. 双语知识库</a>
+            <a class="nav-link" href="#extras">4. 交互与示例</a>
+          </nav>
+        </div>
+      </nav>
+
+      <!-- Main content -->
+      <main class="col-lg-9">
+        <!-- 1. Design (Chinese) -->
+        <section id="design" class="mb-5 surface p-4">
+          <h2 class="h4">1. 设计工具、方法、过程（中文）</h2>
+      
+
+          <div class="row g-3 mt-3">
+            <div class="col-md-6">
+              <div class="p-3">
+                <h6>工具</h6>
+                <ul>
+                  <li>Bootstrap 5：响应式布局与组件</li>
+                  <li>Google Fonts：字体美化（Inter / 思源宋体）</li>
+                  <li>Font Awesome：图标库</li>
+                  <li>原生 JavaScript：交互逻辑与语音朗读</li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="p-3">
+                <h6>方法</h6>
+                <ol>
+                  <li>梳理信息架构：三大板块（设计说明 / 意见书要素 / 双语知识库）。</li>
+                  <li>优先保证可读性与响应式适配，随后增强交互体验（悬浮释义、朗读、导航）。</li>
+                  <li>主题与对比：日夜模式、双语对照、关键词高亮，提升学习效率。</li>
+                </ol>
+              </div>
+            </div>
+
+            <div class="col-12">
+              <div class="p-3">
+                <h6>过程</h6>
+                <p>先搭建语义化的 HTML 结构，再在视觉上用配色与排版达到“高级感”；交互通过轻量原生 JS 与浏览器自带功能实现（如 Web Speech API）。</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 2. Elements (English) -->
+        <section id="elements" class="mb-5 surface p-4">
+          <h2 class="h4">2. Elements of a Judicial Opinion (English)</h2>
+          <p class="text-muted small">下面为整理并简洁化后的要素说明，并附 Lochner 判决的关键摘录。</p>
+
+          <div class="accordion" id="elementsAccord">
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#caseCaption" aria-expanded="false" aria-controls="caseCaption">
+                  1. Case Caption
+                </button>
+              </h2>
+              <div id="caseCaption" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#elementsAccord">
+                <div class="accordion-body">
+                  <p><strong>Definition:</strong> The style of the case identifying the parties and the court.</p>
+                  <p><strong>Example (Lochner):</strong> <em>Joseph Lochner v. People of the State of New York</em>.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="headingTwo">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#procedural" aria-expanded="false" aria-controls="procedural">
+                  2. Procedural History
+                </button>
+              </h2>
+              <div id="procedural" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#elementsAccord">
+                <div class="accordion-body">
+                  <p>Tracks how the case moved through lower courts to the Supreme Court and the judgments below.</p>
+                  <p><em>Lochner</em> reached the Supreme Court on writs of error after conviction under New York's Bakeshop Act.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="headingThree">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#facts" aria-expanded="false" aria-controls="facts">
+                  3. Facts
+                </button>
+              </h2>
+              <div id="facts" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#elementsAccord">
+                <div class="accordion-body">
+                  <p>Relevant facts: The New York statute limited bakers to 10 hours per day and 60 hours per week. Joseph Lochner was charged under that law for permitting employees to work more than the statutory hours.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="headingFour">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#issue" aria-expanded="false" aria-controls="issue">
+                  4. Issue
+                </button>
+              </h2>
+              <div id="issue" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#elementsAccord">
+                <div class="accordion-body">
+                  <p>Whether the Bakeshop Act of New York violated the liberty protected by the Fourteenth Amendment—specifically the freedom of contract.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="headingFive">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#holding" aria-expanded="false" aria-controls="holding">
+                  5. Holding
+                </button>
+              </h2>
+              <div id="holding" class="accordion-collapse collapse" aria-labelledby="headingFive" data-bs-parent="#elementsAccord">
+                <div class="accordion-body">
+                  <p>The Court held that the statute was an unreasonable, unnecessary, and arbitrary interference with the right and liberty of the individual to contract, and therefore invalid under the Fourteenth Amendment.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="headingSix">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#reasoning" aria-expanded="false" aria-controls="reasoning">
+                  6. Reasoning
+                </button>
+              </h2>
+              <div id="reasoning" class="accordion-collapse collapse" aria-labelledby="headingSix" data-bs-parent="#elementsAccord">
+                <div class="accordion-body">
+                  <p>The majority reasoned that baking is not inherently unhealthy in a way that justifies such regulation, so the statute exceeded legitimate police power and improperly restricted contractual liberty.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="headingSeven">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#dicta" aria-expanded="false" aria-controls="dicta">
+                  7. Dicta
+                </button>
+              </h2>
+              <div id="dicta" class="accordion-collapse collapse" aria-labelledby="headingSeven" data-bs-parent="#elementsAccord">
+                <div class="accordion-body">
+                  <p>Statements in the opinion that extend beyond the holding—observations about the limits of state power and the protection of individual liberty.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="headingEight">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#conclusion" aria-expanded="false" aria-controls="conclusion">
+                  8. Conclusion
+                </button>
+              </h2>
+              <div id="conclusion" class="accordion-collapse collapse" aria-labelledby="headingEight" data-bs-parent="#elementsAccord">
+                <div class="accordion-body">
+                  <p>The statute was declared void as incompatible with the Fourteenth Amendment protections.</p>
+                  <p class="small text-muted">Source excerpts curated from public domain court reports.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 3. Glossary / Bilingual knowledge base -->
+        <section id="glossary" class="mb-5 surface p-4">
+          <h2 class="h4">3. 双语知识库（术语、短语、句型）</h2>
+          <p class="text-muted small">点击术语悬浮或点击查看详细卡片；点击“朗读”图标可听英语或中文示例。</p>
+
+          <!-- Display mode note -->
+          <div class="mb-3">
+            <button id="showAllTerms" class="btn btn-sm btn-outline-secondary me-2">显示全部术语</button>
+            <button id="clearHighlights" class="btn btn-sm btn-outline-secondary">清除高亮</button>
+          </div>
+
+          <!-- Glossary table (compact) -->
+          <div class="table-responsive surface p-3 mb-3">
+            <table class="table table-borderless mb-0">
+              <thead>
+                <tr>
+                  <th style="width:24%;">Term</th>
+                  <th style="width:36%;">English (def.)</th>
+                  <th style="width:30%;">中文（标准译法）</th>
+                  <th style="width:10%;">Lvl</th>
+                </tr>
+              </thead>
+              <tbody id="glossaryBody">
+                <!-- Rows will be injected by JS for easy interaction -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Example phrase list -->
+          <div class="row">
+            <div class="col-md-6">
+              <h6>常用短语（示例）</h6>
+              <ul>
+                <li><span class="glossary-term" data-term="be part of" data-meaning="成为…的一部分">be part of</span> → 成为…的一部分</li>
+                <li><span class="glossary-term" data-term="in relation to" data-meaning="与…有关">in relation to</span> → 与…有关</li>
+                <li><span class="glossary-term" data-term="be required or permitted to" data-meaning="被要求或被允许去…">be required or permitted to</span> → 被要求或被允许去…</li>
+                <li><span class="glossary-term" data-term="exceed the police power" data-meaning="超出警察权范畴">exceed the police power</span> → 超出警察权范畴</li>
+                <li><span class="glossary-term" data-term="arbitrary interference" data-meaning="任意干涉">arbitrary interference</span> → 任意干涉</li>
+              </ul>
+            </div>
+
+            <div class="col-md-6">
+              <h6>典型句型（示例）</h6>
+              <ol>
+                <li><code>It is a question of which of two powers or rights shall prevail.</code> → 问题在于哪一种权力或权利应当占优。</li>
+                <li><code>The general right to make a contract ... is part of the liberty of the individual protected by the Fourteenth Amendment.</code></li>
+                <li><code>A statute cannot be held valid unless there be some fair, ground, reasonable ...</code></li>
+              </ol>
+            </div>
+          </div>
+        </section>
+
+        <!-- 4. Extras: interactive demos -->
+        <section id="extras" class="mb-5 surface p-4">
+          <h2 class="h4">4. 交互示例与工具</h2>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <div class="p-3">
+                <h6>朗读示例</h6>
+                <p>选择文本后点击“朗读”即可（支持英/中）。</p>
+                <div class="input-group">
+                  <select id="voiceLang" class="form-select" style="max-width:160px;">
+                    <option value="en-US" selected>English</option>
+                    <option value="zh-CN">中文</option>
+                  </select>
+                  <button id="speakBtn" class="btn btn-accent">朗读示例</button>
+                </div>
+                <textarea id="speakText" class="form-control mt-2" rows="3">The general right to make a contract in relation to his business is part of the liberty of the individual protected by the Fourteenth Amendment.</textarea>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="p-3">
+                <h6>AI 释义助手（占位）</h6>
+                <p>此处为本地示例助手。将来可替换为真实 API 调用：</p>
+                <div class="d-flex gap-2">
+                  <input id="aiQuery" class="form-control" placeholder="输入术语或句子（示例：freedom of contract）">
+                  <button id="aiQueryBtn" class="btn btn-outline-secondary">获取释义</button>
+                </div>
+                <div id="aiResult" class="mt-2 small text-muted">示例：freedom of contract — 契约自由；（进阶）涉及个人缔约权受第十四修正案保护。</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <footer class="mt-4 mb-5 small text-muted">
+          <div>参考与来源：Lochner v. New York (1905) — public domain court reports &amp; legal summaries.</div>
+          <div>页面可扩展：可进一步接入翻译/释义 API 。</div>
+        </footer>
+      </main>
+    </div>
+  </div>
+
+  <!-- Back to top -->
+  <button id="backTop" class="btn btn-accent" aria-label="Back to top" title="返回顶部">
+    <i class="fa-solid fa-arrow-up"></i>
+  </button>
+
+  <!-- Glossary modal -->
+  <div class="modal fade" id="termModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content surface p-3">
+        <div class="modal-header border-0">
+          <h5 id="termModalTitle" class="modal-title"></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p id="termModalDef" class="mb-2"></p>
+          <p id="termModalCn" class="mb-2 text-muted"></p>
+          <div class="d-flex gap-2 align-items-center">
+            <button id="modalSpeakEn" class="btn btn-sm btn-outline-secondary"><i class="fa-solid fa-volume-high"></i> 朗读英</button>
+            <button id="modalSpeakCn" class="btn btn-sm btn-outline-secondary"><i class="fa-solid fa-volume-high"></i> 朗读中</button>
+            <button id="modalHighlight" class="btn btn-sm btn-accent ms-auto">在文中高亮</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap bundle (includes Popper) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    /* ===========================
+       Initial Data: glossary terms
+       =========================== */
+    const GLOSSARY = [
+      {term:'freedom of contract', en:'Right of individuals to freely enter into contracts.', cn:'契约自由', lvl:'进阶', note:'重点'},
+      {term:'Fourteenth Amendment', en:'Amendment to the U.S. Constitution including Due Process and Equal Protection.', cn:'第十四修正案', lvl:'基础'},
+      {term:'police power', en:'State power to regulate for health, safety, welfare.', cn:'警察权（州政府为公共健康、安全、福利而享有的立法权）', lvl:'进阶'},
+      {term:'liberty of person', en:'Personal liberty protected by the Constitution.', cn:'人身自由', lvl:'基础'},
+      {term:'due process of law', en:'Legal requirement that the state must respect legal rights.', cn:'正当程序', lvl:'基础'},
+      {term:'arbitrary interference', en:'Unreasonable or capricious intrusion on rights.', cn:'任意干涉', lvl:'进阶'},
+      {term:'contract of employment', en:'Agreement between employer and employee.', cn:'雇佣合同', lvl:'基础'},
+      {term:'holding', en:'The court’s determination of a matter of law pivotal to the case.', cn:'裁决；判决要点', lvl:'进阶'},
+      {term:'dicta', en:'Comments by judges that are not necessary to the decision.', cn:'附带意见（非判决必需）', lvl:'进阶'},
+      {term:'writ of error', en:'A procedural device for review of lower court decisions.', cn:'错误令状（上诉程序用语）', lvl:'进阶'},
+      {term:'bakeshop act', en:'Statute regulating hours in bakeries.', cn:'面包店法案', lvl:'基础'},
+      {term:'infringe', en:'To encroach upon or violate.', cn:'侵犯', lvl:'基础'},
+      {term:'public welfare', en:'General well-being of the public.', cn:'公共福祉', lvl:'基础'},
+      {term:'occupational regulation', en:'Laws regulating professions and occupations.', cn:'职业规制', lvl:'进阶'},
+      {term:'health law', en:'Laws addressing public health concerns.', cn:'健康法律', lvl:'基础'},
+      {term:'arbitrary interference with the right', en:'Unwarranted intrusion into a protected right.', cn:'对该权利的任意干涉', lvl:'重点', note:'重点'},
+      {term:'sui juris', en:'Having full legal capacity or competence.', cn:'具有行为能力的（法律主体）', lvl:'进阶'},
+      {term:'legitimate exercise', en:'Proper or lawful exercise of power.', cn:'合法行使', lvl:'基础'},
+      {term:'exceed the police power', en:'Go beyond what state regulation for public welfare permits.', cn:'超出警察权的范畴', lvl:'进阶'},
+      {term:'freedom of contract doctrine', en:'Doctrine emphasizing contractual liberty against state regulation.', cn:'契约自由原则', lvl:'重点', note:'重点'}
+    ];
+
+    /* ===========================
+       Render glossary table rows
+       =========================== */
+    const glossaryBody = document.getElementById('glossaryBody');
+    function renderGlossary(){
+      glossaryBody.innerHTML = '';
+      GLOSSARY.forEach((g, idx) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><span class="glossary-term" data-idx="${idx}" data-term="${escapeHtml(g.term)}">${escapeHtml(g.term)}</span></td>
+          <td>${escapeHtml(g.en)}</td>
+          <td>${escapeHtml(g.cn)} ${g.note ? '<span class="badge bg-warning text-dark ms-2">重点</span>' : ''}</td>
+          <td><span class="small text-muted">${g.lvl}</span></td>
+        `;
+        glossaryBody.appendChild(tr);
+      });
+    }
+    renderGlossary();
+
+    /* ===========================
+       Tooltips (Bootstrap)
+       =========================== */
+    const tooltipTriggerList = () => {
+      // initialize tooltips for glossary-term on hover to show short CN meaning
+      document.querySelectorAll('.glossary-term').forEach(el => {
+        const idx = Number(el.getAttribute('data-idx'));
+        const g = GLOSSARY[idx];
+        // Use title attribute for bootstrap tooltip
+        el.setAttribute('title', g.cn + (g.note? ' （重点）':'' ));
+      });
+      // create bootstrap tooltips
+      const tooltipTriggerEls = [].slice.call(document.querySelectorAll('[title]'))
+      tooltipTriggerEls.forEach(el => {
+        if (!el.dataset.bsToggle) {
+          new bootstrap.Tooltip(el, {placement:'top', trigger:'hover'});
+        }
+      });
+    };
+    // call after initial render
+    tooltipTriggerList();
+
+    /* ===========================
+       Term click -> modal + highlight action
+       =========================== */
+    const termModal = new bootstrap.Modal(document.getElementById('termModal'));
+    document.addEventListener('click', (e) => {
+      const el = e.target.closest('.glossary-term');
+      if (el) {
+        const idx = Number(el.getAttribute('data-idx'));
+        const g = GLOSSARY[idx];
+        document.getElementById('termModalTitle').innerText = g.term;
+        document.getElementById('termModalDef').innerHTML = '<strong>EN:</strong> ' + g.en;
+        document.getElementById('termModalCn').innerHTML = '<strong>中:</strong> ' + g.cn + (g.note? ' <span class="badge bg-warning text-dark ms-1">重点</span>':'');
+        // store selected idx for highlight
+        document.getElementById('modalHighlight').dataset.idx = idx;
+        termModal.show();
+      }
+    });
+
+    document.getElementById('modalHighlight').addEventListener('click', () => {
+      const idx = Number(document.getElementById('modalHighlight').dataset.idx);
+      const term = GLOSSARY[idx].term;
+      highlightTerm(term);
+      termModal.hide();
+    });
+
+    /* ===========================
+       Highlight occurrences in page
+       =========================== */
+    function highlightTerm(term){
+      clearHighlights();
+      if (!term) return;
+      const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
+      const nodes = [];
+      while(walker.nextNode()){
+        nodes.push(walker.currentNode);
+      }
+      const re = new RegExp('\\b' + escapeRegExp(term) + '\\b', 'gi');
+      nodes.forEach(node => {
+        if (re.test(node.textContent) && node.parentElement && !['SCRIPT','STYLE','TEXTAREA'].includes(node.parentElement.tagName)) {
+          const span = document.createElement('span');
+          span.innerHTML = node.textContent.replace(re, (m)=> `<mark class="highlight">${m}</mark>`);
+          node.parentNode.replaceChild(span, node);
+        }
+      });
+      // show clear button
+      document.getElementById('clearHighlights').classList.add('btn-accent');
+    }
+    function clearHighlights(){
+      // replace <mark> highlights by plain text
+      document.querySelectorAll('mark.highlight').forEach(mark => {
+        const text = document.createTextNode(mark.textContent);
+        mark.parentNode.replaceChild(text, mark);
+      });
+      // re-run tooltip init (some nodes may be re-created)
+      tooltipTriggerList();
+      document.getElementById('clearHighlights').classList.remove('btn-accent');
+    }
+
+    document.getElementById('clearHighlights').addEventListener('click', clearHighlights);
+    document.getElementById('showAllTerms').addEventListener('click', () => {
+      // scroll to glossary
+      document.getElementById('glossary').scrollIntoView({behavior:'smooth'});
+    });
+
+    /* ===========================
+       Speak (Web Speech API)
+       =========================== */
+    function speak(text, lang='en-US'){ 
+      if (!window.speechSynthesis) {
+        alert('当前浏览器不支持语音合成。');
+        return;
+      }
+      window.speechSynthesis.cancel();
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.lang = lang;
+      // choose a voice matching lang if possible
+      const voices = window.speechSynthesis.getVoices();
+      const v = voices.find(voice => voice.lang.toLowerCase().startsWith(lang.split('-')[0]));
+      if (v) utter.voice = v;
+      window.speechSynthesis.speak(utter);
+    }
+
+    document.getElementById('speakBtn').addEventListener('click', () => {
+      const txt = document.getElementById('speakText').value.trim();
+      const lang = document.getElementById('voiceLang').value;
+      if (txt) speak(txt, lang);
+    });
+    document.getElementById('modalSpeakEn').addEventListener('click', () => {
+      const en = document.getElementById('termModalDef').innerText.replace('EN: ','');
+      speak(en, 'en-US');
+    });
+    document.getElementById('modalSpeakCn').addEventListener('click', () => {
+      const cn = document.getElementById('termModalCn').innerText.replace('中: ','');
+      speak(cn, 'zh-CN');
+    });
+
+    /* ===========================
+       AI Assist (local placeholder)
+       =========================== */
+    document.getElementById('aiQueryBtn').addEventListener('click', () => {
+      const q = document.getElementById('aiQuery').value.trim().toLowerCase();
+      if (!q) return;
+      // local fuzzy search in GLOSSARY
+      const found = GLOSSARY.find(g => g.term.toLowerCase() === q) || GLOSSARY.find(g => g.term.toLowerCase().includes(q));
+      if (found) {
+        document.getElementById('aiResult').innerHTML = `<strong>${found.term}</strong> — ${found.cn}；${found.en} ${found.note?'<span class="badge bg-warning text-dark ms-2">重点</span>':''}`;
+      } else {
+        document.getElementById('aiResult').innerText = '未找到本地匹配释义（这是本地示例）。可在未来接入在线释义 API。';
+      }
+    });
+
+    /* ===========================
+       Theme toggle (save to localStorage)
+       =========================== */
+    const themeToggle = document.getElementById('themeToggle');
+    const themeIcon = document.getElementById('themeIcon');
+    function applyTheme(theme){
+      if (theme === 'dark') {
+        document.documentElement.setAttribute('data-theme','dark');
+        themeIcon.className = 'fa-solid fa-sun';
+      } else {
+        document.documentElement.removeAttribute('data-theme');
+        themeIcon.className = 'fa-solid fa-moon';
+      }
+      localStorage.setItem('siteTheme', theme);
+    }
+    // initialize theme from system or localStorage
+    (function(){
+      const saved = localStorage.getItem('siteTheme');
+      if (saved) applyTheme(saved);
+      else {
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        applyTheme(prefersDark ? 'dark' : 'light');
+      }
+    })();
+    themeToggle.addEventListener('click', () => {
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      applyTheme(isDark ? 'light' : 'dark');
+    });
+
+    /* ===========================
+       Back to top & show/hide
+       =========================== */
+    const backTop = document.getElementById('backTop');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 300) backTop.style.display = 'block';
+      else backTop.style.display = 'none';
+    });
+    backTop.addEventListener('click', () => window.scrollTo({top:0, behavior:'smooth'}));
+
+    /* ===========================
+       Display mode: English / Chinese / Bilingual
+       =========================== */
+    const modeEnglish = document.getElementById('modeEnglish');
+    const modeChinese = document.getElementById('modeChinese');
+    const modeBilingual = document.getElementById('modeBilingual');
+
+    function setDisplayMode(mode){
+      // modes: 'en', 'cn', 'bi'
+      // For now: we'll control the visibility of English paragraphs vs Chinese paragraphs.
+      // Implementation: add classes or data attributes where dual text exists.
+      // Simple approach here: modify body dataset and let CSS/JS control future rendering.
+      document.body.dataset.displayMode = mode;
+      localStorage.setItem('displayMode', mode);
+      // visual active states
+      [modeEnglish, modeBilingual, modeChinese].forEach(btn => btn.classList.remove('btn-accent'));
+      if (mode === 'en') modeEnglish.classList.add('btn-accent');
+      if (mode === 'cn') modeChinese.classList.add('btn-accent');
+      if (mode === 'bi') modeBilingual.classList.add('btn-accent');
+
+      // For 'bi' mode, apply class to glossary area to show bilingual split example
+      const main = document.querySelector('main');
+      if (mode === 'bi') {
+        main.classList.add('bilingual-mode');
+      } else {
+        main.classList.remove('bilingual-mode');
+      }
+
+      // Note: full bilingual split rendering will be implemented in code generation phase if we need separate bilingual text blocks.
+    }
+
+    // restore
+    (function(){
+      const m = localStorage.getItem('displayMode') || 'bi';
+      setDisplayMode(m);
+    })();
+
+    modeEnglish.addEventListener('click', ()=> setDisplayMode('en'));
+    modeChinese.addEventListener('click', ()=> setDisplayMode('cn'));
+    modeBilingual.addEventListener('click', ()=> setDisplayMode('bi'));
+
+    /* ===========================
+       Utility helpers
+       =========================== */
+    function escapeHtml(str){
+      return String(str).replace(/[&<>"']/g, function(m){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m]; });
+    }
+    function escapeRegExp(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+
+    /* ===========================
+       Initialize scrollspy for side nav (desktop only)
+       =========================== */
+    // Use Bootstrap ScrollSpy
+    const scrollSpyTarget = document.body;
+    // Delay attach until DOM content loaded
+    document.addEventListener('DOMContentLoaded', function(){
+      try{
+        new bootstrap.ScrollSpy(document.body, { target: '#toc', offset: 120 });
+      } catch(e) {}
+    });
+
+    /* ===========================
+       Accessibility: keyboard shortcut to toggle theme (T)
+       =========================== */
+    document.addEventListener('keydown', (e) => {
+      if (e.key.toLowerCase() === 't' && (e.ctrlKey || e.metaKey)) {
+        e.preventDefault();
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        applyTheme(isDark ? 'light' : 'dark');
+      }
+    });
+
+    /* ===========================
+       Notes for future extensions:
+       - To implement full bilingual split: provide parallel DOM nodes for each paragraph with data-id and render side-by-side.
+       - To add AI 释义真实调用：replace AI placeholder logic with fetch() to the chosen API and render result in #aiResult.
+       - To persist user highlights across sessions: store highlighted terms list in localStorage.
+       =========================== */
+  </script>
+</body>
+</html>
