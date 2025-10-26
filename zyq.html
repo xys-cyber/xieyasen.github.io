@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brown v. Board of Education - 交互式法庭意见书</title>
+    <style>
+        :root {
+            --primary-green: #2E7D32;
+            --light-green: #66BB6A;
+            --pale-green: #E8F5E8;
+            --accent-gold: #FFD54F;
+            --text-dark: #1B5E20;
+            --text-light: #4E342E;
+            --bg-light: #F5FBF5;
+            --glass-bg: rgba(255, 255, 255, 0.85);
+            --shadow: 0 8px 32px rgba(46, 125, 50, 0.1);
+            --transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Microsoft YaHei', 'Roboto', 'Helvetica Neue', sans-serif;
+            background: linear-gradient(135deg, var(--pale-green) 0%, var(--bg-light) 100%);
+            color: var(--text-dark);
+            line-height: 1.7;
+            overflow-x: hidden;
+            min-height: 100vh;
+            background-attachment: fixed;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary-green) 0%, var(--light-green) 100%);
+            color: white;
+            padding: 60px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: shimmer 8s infinite linear;
+            z-index: 0;
+        }
+
+        @keyframes shimmer {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+            position: relative;
+            z-index: 1;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .subtitle {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+            font-weight: 300;
+        }
+
+        .designer {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(10px);
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            z-index: 1;
+            transition: var(--transition);
+        }
+
+        .designer:hover {
+            background: rgba(255, 255, 255, 0.35);
+            transform: translateY(-2px);
+        }
+
+        nav {
+            background: var(--glass-bg);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(46, 125, 50, 0.1);
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        nav li {
+            margin: 0;
+        }
+
+        nav a {
+            color: var(--primary-green);
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 30px;
+            transition: var(--transition);
+            display: block;
+            font-weight: 500;
+            border: 1px solid transparent;
+        }
+
+        nav a:hover, nav a.active {
+            background: var(--primary-green);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(46, 125, 50, 0.3);
+            border-color: var(--primary-green);
+        }
+
+        .section {
+            background: var(--glass-bg);
+            margin: 40px 0;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(46, 125, 50, 0.15);
+        }
+
+        h2 {
+            color: var(--primary-green);
+            font-size: 2.2rem;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid var(--accent-gold);
+            position: relative;
+            font-weight: 600;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            width: 80px;
+            height: 3px;
+            background: var(--primary-green);
+        }
+
+        h3 {
+            color: var(--light-green);
+            font-size: 1.5rem;
+            margin: 25px 0 15px 0;
+            font-weight: 500;
+        }
+
+        .tool-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin: 25px 0;
+        }
+
+        .tool-card {
+            background: linear-gradient(135deg, var(--pale-green) 0%, white 100%);
+            padding: 25px;
+            border-radius: 15px;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(46, 125, 50, 0.1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .tool-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 25px rgba(46, 125, 50, 0.15);
+        }
+
+        .tool-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: var(--accent-gold);
+        }
+
+        .vocabulary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+
+        .vocab-item {
+            background: linear-gradient(135deg, var(--pale-green) 0%, white 100%);
+            padding: 20px;
+            border-radius: 15px;
+            border-left: 5px solid var(--primary-green);
+            transition: var(--transition);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .vocab-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(46, 125, 50, 0.15);
+            border-left-color: var(--accent-gold);
+        }
+
+        .vocab-term {
+            font-weight: 700;
+            color: var(--primary-green);
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+
+        .vocab-meaning {
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        .sentence-box {
+            background: linear-gradient(135deg, var(--pale-green) 0%, white 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid var(--accent-gold);
+            position: relative;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            transition: var(--transition);
+        }
+
+        .sentence-box:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(46, 125, 50, 0.15);
+        }
+
+        .sentence-box::after {
+            content: '"';
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 4rem;
+            color: var(--accent-gold);
+            opacity: 0.2;
+            font-family: Georgia, serif;
+            line-height: 1;
+        }
+
+        .interactive-element {
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .interactive-element:hover {
+            background: var(--primary-green);
+            color: white;
+            transform: scale(1.02);
+            box-shadow: 0 8px 20px rgba(46, 125, 50, 0.3);
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, transparent 0%, var(--accent-gold) 0%, var(--accent-gold) 100%, transparent 100%);
+            background-size: 0% 100%;
+            background-repeat: no-repeat;
+            transition: background-size 0.6s ease;
+            padding: 0 2px;
+        }
+
+        .highlight:hover {
+            background-size: 100% 100%;
+        }
+
+        .collapsible {
+            background: linear-gradient(135deg, var(--primary-green) 0%, var(--light-green) 100%);
+            color: white;
+            cursor: pointer;
+            padding: 20px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 1.1rem;
+            border-radius: 12px;
+            margin: 15px 0;
+            transition: var(--transition);
+            font-weight: 500;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(46, 125, 50, 0.2);
+        }
+
+        .collapsible:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(46, 125, 50, 0.3);
+        }
+
+        .collapsible::after {
+            content: '▼';
+            font-size: 0.8rem;
+            transition: transform 0.3s ease;
+        }
+
+        .collapsible.active::after {
+            transform: rotate(180deg);
+        }
+
+        .content {
+            padding: 0 20px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out;
+            background: var(--glass-bg);
+            border-radius: 0 0 12px 12px;
+            margin: -15px 0 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            border: 1px solid rgba(46, 125, 50, 0.1);
+            border-top: none;
+        }
+
+        .content.active {
+            padding: 20px;
+            max-height: 1000px;
+        }
+
+        .timeline {
+            position: relative;
+            padding: 30px 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 30px;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(to bottom, var(--primary-green), var(--light-green));
+            border-radius: 3px;
+        }
+
+        .timeline-item {
+            margin: 30px 0;
+            padding-left: 80px;
+            position: relative;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 20px;
+            top: 5px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border: 4px solid var(--primary-green);
+            border-radius: 50%;
+            z-index: 1;
+            transition: var(--transition);
+        }
+
+        .timeline-item:hover::before {
+            transform: scale(1.3);
+            border-color: var(--accent-gold);
+        }
+
+        .timeline-date {
+            color: var(--primary-green);
+            font-weight: 700;
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+
+        .timeline-content {
+            background: var(--glass-bg);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            border: 1px solid rgba(46, 125, 50, 0.1);
+            transition: var(--transition);
+        }
+
+        .timeline-content:hover {
+            transform: translateX(10px);
+            box-shadow: 0 8px 20px rgba(46, 125, 50, 0.15);
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .designer {
+                position: static;
+                display: inline-block;
+                margin: 20px 0 0;
+            }
+            
+            nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            nav a {
+                width: 100%;
+                text-align: center;
+                margin: 5px 0;
+            }
+            
+            .section {
+                padding: 25px;
+                margin: 25px 0;
+            }
+            
+            .tool-grid, .vocabulary-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .timeline::before {
+                left: 20px;
+            }
+
+            .timeline-item {
+                padding-left: 60px;
+            }
+
+            .timeline-item::before {
+                left: 10px;
+            }
+        }
+
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .floating-nav {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--primary-green);
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(46, 125, 50, 0.3);
+            transition: var(--transition);
+            z-index: 1000;
+            font-size: 1.5rem;
+            border: 2px solid white;
+        }
+
+        .floating-nav:hover {
+            transform: scale(1.1) rotate(10deg);
+            background: var(--light-green);
+            box-shadow: 0 8px 25px rgba(46, 125, 50, 0.4);
+        }
+
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 4px;
+            background: linear-gradient(to right, var(--primary-green), var(--accent-gold));
+            z-index: 1001;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-bar" id="progressBar"></div>
+    
+    <header>
+        <div class="designer">设计者: 钟雨晴</div>
+        <div class="container">
+            <h1>Brown v. Board of Education</h1>
+            <p class="subtitle">347 U.S. 483 (1954) - 交互式法庭意见书分析</p>
+        </div>
+    </header>
+
+    <nav>
+        <div class="container">
+            <ul>
+                <li><a href="#design" class="nav-link">设计工具与方法</a></li>
+                <li><a href="#elements" class="nav-link">法庭意见书要素</a></li>
+                <li><a href="#vocabulary" class="nav-link">双语知识库</a></li>
+                <li><a href="#timeline" class="nav-link">案例时间线</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <section id="design" class="section fade-in">
+            <h2>1. 设计工具、方法、过程</h2>
+            
+            <h3>设计工具</h3>
+            <div class="tool-grid">
+                <div class="tool-card interactive-element">
+                    <h4>🎨 视觉设计</h4>
+                    <p>Adobe Creative Suite (Photoshop, Illustrator)</p>
+                    <p>Figma - 协作设计平台</p>
+                    <p>Canva - 快速原型制作</p>
+                </div>
+                <div class="tool-card interactive-element">
+                    <h4>💻 前端开发</h4>
+                    <p>HTML5 + CSS3 + JavaScript</p>
+                    <p>VS Code - 代码编辑器</p>
+                    <p>Chrome DevTools - 调试工具</p>
+                </div>
+                <div class="tool-card interactive-element">
+                    <h4>📱 响应式设计</h4>
+                    <p>Bootstrap Grid System</p>
+                    <p>Flexbox & CSS Grid</p>
+                    <p>Media Queries - 断点设置</p>
+                </div>
+                <div class="tool-card interactive-element">
+                    <h4>🌐 交互功能</h4>
+                    <p>jQuery - DOM操作</p>
+                    <p>Animate.css - 动画效果</p>
+                    <p>ScrollReveal - 滚动动画</p>
+                </div>
+            </div>
+
+            <h3>设计方法</h3>
+            <button class="collapsible">用户中心设计 (UCD)</button>
+            <div class="content">
+                <p>以用户需求为核心的设计方法，通过用户调研、 personas 创建、用户旅程图等工具，确保设计符合目标用户的使用习惯和期望。</p>
+                <ul>
+                    <li>目标用户：法律专业学生、教育工作者</li>
+                    <li>关键需求：易读性、信息层次清晰、交互友好</li>
+                    <li>使用场景：课堂学习、自主研究、教学演示</li>
+                </ul>
+            </div>
+
+            <button class="collapsible">渐进增强设计</button>
+            <div class="content">
+                <p>从基础功能开始，逐步添加更复杂的交互和视觉效果，确保在不同设备和浏览器上都能良好运行。</p>
+                <ul>
+                    <li>基础层：纯HTML内容结构</li>
+                    <li>增强层：CSS样式和布局</li>
+                    <li>交互层：JavaScript动态效果</li>
+                </ul>
+            </div>
+
+            <button class="collapsible">移动优先设计</button>
+            <div class="content">
+                <p>首先设计移动端体验，然后扩展到平板和桌面设备，确保在小屏幕上也能提供优秀的用户体验。</p>
+                <ul>
+                    <li>断点设置：320px, 768px, 1024px, 1200px</li>
+                    <li>触摸友好的交互元素（最小44px）</li>
+                    <li>优化的字体大小和行高</li>
+                </ul>
+            </div>
+
+            <h3>设计过程</h3>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-date">第1阶段：需求分析</div>
+                    <div class="timeline-content">
+                        <p>分析法庭意见书内容结构，确定关键信息点，制定内容层次和导航结构。</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">第2阶段：信息架构</div>
+                    <div class="timeline-content">
+                        <p>创建网站地图，设计导航系统，规划内容组织和用户流程。</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">第3阶段：视觉设计</div>
+                    <div class="timeline-content">
+                        <p>选择绿色系配色方案，设计现代化界面元素，创建响应式布局。</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">第4阶段：交互开发</div>
+                    <div class="timeline-content">
+                        <p>实现滚动动画、折叠面板、悬停效果等交互功能，增强用户体验。</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">第5阶段：测试优化</div>
+                    <div class="timeline-content">
+                        <p>多设备测试，性能优化，可访问性检查，用户体验微调。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="elements" class="section fade-in">
+            <h2>2. Court Opinion Elements</h2>
+            
+            <h3>Case Information</h3>
+            <div class="sentence-box">
+                <p><strong>Case Name:</strong> Brown et al. v. Board of Education of Topeka et al.</p>
+                <p><strong>Citation:</strong> 347 U.S. 483 (1954)</p>
+                <p><strong>Court:</strong> Supreme Court of the United States</p>
+                <p><strong>Argued:</strong> December 9, 1952; Reargued: December 8, 1953</p>
+                <p><strong>Decided:</strong> May 17, 1954</p>
+            </div>
+
+            <h3>Key Legal Elements</h3>
+            <button class="collapsible">Procedural History</button>
+            <div class="content">
+                <p>Appeal from the United States District Court for the District of Kansas. The case was consolidated with similar cases from South Carolina, Virginia, and Delaware.</p>
+                <ul>
+                    <li>Original filing: 1951</li>
+                    <li>District Court decision: 1951</li>
+                    <li>Supreme Court argument: 1952</li>
+                    <li>Reargument ordered: 1953</li>
+                    <li>Final decision: 1954</li>
+                </ul>
+            </div>
+
+            <button class="collapsible">Facts</button>
+            <div class="content">
+                <p>Black children were denied admission to public schools attended by white children under laws requiring or permitting racial segregation. The plaintiffs alleged that segregation deprived them of equal protection under the Fourteenth Amendment.</p>
+                <p><span class="highlight">Key Fact:</span> In each case, minors of the Negro race sought admission to public schools on a non-segregated basis.</p>
+            </div>
+
+            <button class="collapsible">Issue</button>
+            <div class="content">
+                <p>Does racial segregation in public schools, even when physical facilities and other tangible factors are equal, deprive minority children of equal educational opportunities in violation of the Equal Protection Clause of the Fourteenth Amendment?</p>
+            </div>
+
+            <button class="collapsible">Holding</button>
+            <div class="content">
+                <p><strong>YES.</strong> Racial segregation in public education is unconstitutional because separate educational facilities are inherently unequal.</p>
+                <p class="sentence-box">
+                    <em>"We conclude that in the field of public education the doctrine of 'separate but equal' has no place. Separate educational facilities are inherently unequal."</em>
+                </p>
+            </div>
+
+            <button class="collapsible">Reasoning</button>
+            <div class="content">
+                <h4>Majority Opinion by Chief Justice Warren:</h4>
+                <ol>
+                    <li><strong>Historical Analysis:</strong> The history of the Fourteenth Amendment is inconclusive regarding segregation in education.</li>
+                    <li><strong>Importance of Education:</strong> Education is perhaps the most important function of state and local governments in modern society.</li>
+                    <li><strong>Psychological Impact:</strong> Segregation generates a feeling of inferiority that affects children's motivation to learn.</li>
+                    <li><strong>Inherent Inequality:</strong> Separate educational facilities are inherently unequal, even if tangible factors are equal.</li>
+                </ol>
+            </div>
+
+            <button class="collapsible">Significance</button>
+            <div class="content">
+                <p>This landmark decision overturned <em>Plessy v. Ferguson</em> (1896) and its "separate but equal" doctrine, marking a pivotal moment in the American civil rights movement.</p>
+                <ul>
+                    <li>Declared racial segregation in public schools unconstitutional</li>
+                    <li>Applied strict scrutiny to racial classifications</li>
+                    <li>Led to desegregation efforts nationwide</li>
+                    <li>Paved the way for broader civil rights reforms</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="vocabulary" class="section fade-in">
+            <h2>3. 双语知识库</h2>
+            
+            <h3>核心术语 (20 Terms)</h3>
+            <div class="vocabulary-grid">
+                <div class="vocab-item">
+                    <div class="vocab-term">Segregation</div>
+                    <div class="vocab-meaning">种族隔离 - The practice of separating people by race</div>
+                </div>
+                <div class="vocab-item">
+                    <div class="vocab-term">Equal Protection</div>
+                    <div class="vocab-meaning">平等保护 - Constitutional guarantee of equal treatment</div>
+                </div>
+                <div class="vocab-item">
+                    <div class="vocab-term">Fourteenth Amendment</div>
+                    <div class="vocab-meaning">第十四修正案 - Constitutional amendment guaranteeing equal protection</div>
+                </div>
+                <div class="vocab-item">
+                    <div class="vocab-term">Plaintiff</div>
+                    <div class="vocab-meaning">原告 - Party bringing a lawsuit</div>
+                </div>
+                <div class="vocab-item">
+                    <div class="vocab-term">Defendant</div>
+                    <div class="vocab-meaning">被告 - Party being sued</div>
+                </div>
+                <div class="vocab-item">
+                    <div class="vocab-term">Appellant</div>
+                    <div class="vocab-meaning">上诉人 - Party appealing a decision</div>
+                </div>
+                <div class="vocab-item">
+                    <div class="vocab-term">Appellee</div>
+                    <div class="vocab-meaning">被上诉人 - Party responding to an appeal</div>
+                </div>
+                <div class="vocab-item">
+                    <div class="vocab-term">Majority Opinion</div>
+                    <div class="vocab-meaning">多数意见 - The court's primary decision</div>
+                </div>
+                <div class="vocab-item">
+                    <div class="vocab-term">Dissenting Opinion</div>
+                    <div class="vocab-meaning">异议意见 - Opinion disagreeing with the majority</div>
+                </div>
+                <div class="vocab-item">
+                    <div class="vocab-term">Precedent</div>
+                    <div class="vocab-meaning">判例 - Previous court decision serving as authority</div>
+                </div>
+                <div class="vocab-item">
+                    <div class="vocab-term">Stare Decisis</div>
+                    <div class="vocab-meaning">遵循先例 - Principle of following precedent</div>
+                </div>
+                <div class="vocab-item">
+                    <div class="vocab-term">Constitutional Law</div>
+                    <div class="vocab-meaning">宪法法 - Law relating to the constitution</div>
+                </div>
+                <div class="vocab-item">
+                    <div class="vocab-term">Civil Rights</div>
+                    <div class="vocab-meaning">民权 - Rights of citizens to political and social freedom</div>
+                </div>
+                <div class="vocab-item">
+                    <div class="vocab-term">Judicial Review</div>
+                    <div class="vocab-meaning">司法审查 - Court's power to review laws</div>
+                </div>
+                <div class="vocab-item">
+                    <div class="vocab-term">Supreme Court</div>
+                    <div class="vocab-meaning">最高法院 - Highest court in the United States</div>
+                </div>
+                <div class="vocab-item">
+                    <div class="vocab-term">District Court</div>
+                    <div class="vocab-meaning">地区法院 - Federal trial court</div>
+                </div>
+                <div class="vocab-item">
+                    <div class="vocab-term">Holding</div>
+                    <div class="vocab-meaning">判决要点 - The court's decision on the issue</div>
+                </div>
+                <div class="vocab-item">
+                    <div class="vocab-term">Ratio Decidendi</div>
+                    <div class="vocab-meaning">判决理由 - The reasoning for the decision</div>
+                </div>
+                <div class="vocab-item">
+                    <div class="vocab-term">Obiter Dicta</div>
+                    <div class="vocab-meaning">附带意见 - Comments not essential to the decision</div>
+                </div>
+                <div class="vocab-item">
+                    <div class="vocab-term">Amicus Curiae</div>
+                    <div class="vocab-meaning">法庭之友 - Friend of the court brief</div>
+                </div>
+            </div>
+
+            <h3>常用短语 (10 Phrases)</h3>
+            <div class="sentence-box">
+                <p><strong>Separate but equal</strong> - "隔离但平等" - Doctrine established in Plessy v. Ferguson</p>
+            </div>
+            <div class="sentence-box">
+                <p><strong>Equal protection of the laws</strong> - "法律的平等保护" - Constitutional guarantee under the 14th Amendment</p>
+            </div>
+            <div class="sentence-box">
+                <p><strong>Due process of law</strong> - "法律正当程序" - Constitutional protection of fair procedures</p>
+            </div>
+            <div class="sentence-box">
+                <p><strong>Fundamental right</strong> - "基本权利" - Basic rights protected by the constitution</p>
+            </div>
+            <div class="sentence-box">
+                <p><strong>Strict scrutiny</strong> - "严格审查" - Highest level of judicial review</p>
+            </div>
+            <div class="sentence-box">
+                <p><strong>Compelling state interest</strong> - "令人信服的政府利益" - Justification for limiting fundamental rights</p>
+            </div>
+            <div class="sentence-box">
+                <p><strong>Narrowly tailored</strong> - "精确剪裁" - Requirement for laws limiting fundamental rights</p>
+            </div>
+            <div class="sentence-box">
+                <p><strong>Least restrictive means</strong> - "最小限制手段" - Requirement for achieving government interests</p>
+            </div>
+            <div class="sentence-box">
+                <p><strong>Suspect classification</strong> - "可疑分类" - Classification triggering strict scrutiny (race, national origin)</p>
+            </div>
+            <div class="sentence-box">
+                <p><strong>Heightened scrutiny</strong> - "加强审查" - Intermediate level of judicial review</p>
+            </div>
+
+            <h3>典型句型 (5 Sentence Patterns)</h3>
+            <div class="sentence-box">
+                <p><strong>句型1：判决声明</strong><br>
+                <em>"We conclude that in the field of public education the doctrine of 'separate but equal' has no place."</em><br>
+                我们得出结论，在公共教育领域，"隔离但平等"的原则没有立足之地。</p>
+            </div>
+            <div class="sentence-box">
+                <p><strong>句型2：法律推理</strong><br>
+                <em>"Separate educational facilities are inherently unequal."</em><br>
+                分离的教育设施本身就是不平等的。</p>
+            </div>
+            <div class="sentence-box">
+                <p><strong>句型3：宪法解释</strong><br>
+                <em>"Such segregation violates the Equal Protection Clause of the Fourteenth Amendment."</em><br>
+                这种隔离违反了第十四修正案的平等保护条款。</p>
+            </div>
+            <div class="sentence-box">
+                <p><strong>句型4：判例推翻</strong><br>
+                <em>"This Court should reconsider its decision in Plessy v. Ferguson."</em><br>
+                本法院应该重新考虑其在普莱西诉弗格森案中的决定。</p>
+            </div>
+            <div class="sentence-box">
+                <p><strong>句型5：社会影响</strong><br>
+                <em>"Segregation generates a feeling of inferiority that affects the motivation to learn."</em><br>
+                隔离产生自卑感，影响学习的动机。</p>
+            </div>
+        </section>
+
+        <section id="timeline" class="section fade-in">
+            <h2>案例时间线</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-date">1951年3月</div>
+                    <div class="timeline-content">
+                        <p>Oliver Brown 代表女儿起诉托皮卡教育局，挑战学校种族隔离政策。</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">1951年6月</div>
+                    <div class="timeline-content">
+                        <p>堪萨斯地区法院支持"隔离但平等"原则，但承认隔离对黑人儿童有不利影响。</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">1952年12月9日</div>
+                    <div class="timeline-content">
+                        <p>案件首次在最高法院开庭审理，与南卡罗来纳、弗吉尼亚、特拉华州的类似案件合并审理。</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">1953年6月</div>
+                    <div class="timeline-content">
+                        <p>最高法院下令重新审理，要求各方就第十四修正案的历史意图进行补充论证。</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">1953年12月8日</div>
+                    <div class="timeline-content">
+                        <p>案件重新开庭审理，各方就宪法历史和公共教育的重要性进行了深入辩论。</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">1954年5月17日</div>
+                    <div class="timeline-content">
+                        <p>最高法院一致裁决(9-0)宣布公共教育中的种族隔离违宪，推翻了"隔离但平等"原则。</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">1955年5月31日</div>
+                    <div class="timeline-content">
+                        <p>最高法院发布执行令(Brown II)，要求各地"以一切审慎的速度"废除学校隔离。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div class="floating-nav" onclick="scrollToTop()">↑</div>
+
+    <script>
+        // Collapsible functionality
+        document.querySelectorAll('.collapsible').forEach(button => {
+            button.addEventListener('click', function() {
+                this.classList.toggle('active');
+                const content = this.nextElementSibling;
+                if (content.style.maxHeight) {
+                    content.style.maxHeight = null;
+                } else {
+                    content.style.maxHeight = content.scrollHeight + "px";
+                }
+            });
+        });
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href').substring(1);
+                const targetElement = document.getElementById(targetId);
+                
+                if (targetElement) {
+                    const offsetTop = targetElement.offsetTop - 80;
+                    window.scrollTo({
+                        top: offsetTop,
+                        behavior: 'smooth'
+                    });
+                    
+                    // Update active nav link
+                    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+                }
+            });
+        });
+
+        // Scroll to top functionality
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        // Fade in animation on scroll
+        function handleScrollAnimation() {
+            const elements = document.querySelectorAll('.fade-in');
+            elements.forEach(element => {
+                const elementTop = element.getBoundingClientRect().top;
+                const elementBottom = element.getBoundingClientRect().bottom;
+                const isVisible = elementTop < window.innerHeight - 100 && elementBottom > 0;
+                
+                if (isVisible) {
+                    element.classList.add('visible');
+                }
+            });
+        }
+
+        // Progress bar
+        function updateProgressBar() {
+            const scrollTop = window.pageYOffset;
+            const docHeight = document.body.offsetHeight - window.innerHeight;
+            const scrollPercent = (scrollTop / docHeight) * 100;
+            document.getElementById('progressBar').style.width = scrollPercent + '%';
+        }
+
+        // Active navigation highlighting
+        function updateActiveNav() {
+            const sections = document.querySelectorAll('.section');
+            const navLinks = document.querySelectorAll('.nav-link');
+            
+            let currentSection = '';
+            sections.forEach(section => {
+                const sectionTop = section.getBoundingClientRect().top;
+                if (sectionTop <= 100) {
+                    currentSection = section.id;
+                }
+            });
+            
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + currentSection) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        // Event listeners
+        window.addEventListener('scroll', () => {
+            handleScrollAnimation();
+            updateProgressBar();
+            updateActiveNav();
+        });
+
+        window.addEventListener('load', () => {
+            handleScrollAnimation();
+            updateProgressBar();
+        });
+
+        // Interactive element hover effects
+        document.querySelectorAll('.interactive-element').forEach(element => {
+            element.addEventListener('mouseenter', function() {
+                this.style.transform = 'scale(1.05)';
+            });
+            
+            element.addEventListener('mouseleave', function() {
+                this.style.transform = 'scale(1)';
+            });
+        });
+
+        // Add click effects
+        document.querySelectorAll('.vocab-item, .tool-card, .sentence-box').forEach(element => {
+            element.addEventListener('click', function() {
+                this.style.transform = 'scale(0.98)';
+                setTimeout(() => {
+                    this.style.transform = 'scale(1)';
+                }, 150);
+            });
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add active class to first nav link
+            document.querySelector('.nav-link').classList.add('active');
+            
+            // Trigger initial animations
+            setTimeout(handleScrollAnimation, 100);
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowUp' && e.ctrlKey) {
+                scrollToTop();
+            }
+        });
+
+        // Touch/swipe support for mobile
+        let touchStartY = 0;
+        let touchEndY = 0;
+
+        document.addEventListener('touchstart', function(e) {
+            touchStartY = e.changedTouches[0].screenY;
+        });
+
+        document.addEventListener('touchend', function(e) {
+            touchEndY = e.changedTouches[0].screenY;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            const swipeThreshold = 50;
+            const diff = touchStartY - touchEndY;
+            
+            if (Math.abs(diff) > swipeThreshold) {
+                if (diff > 0) {
+                    // Swipe up - scroll down
+                    window.scrollBy(0, window.innerHeight * 0.8);
+                } else {
+                    // Swipe down - scroll up
+                    window.scrollBy(0, -window.innerHeight * 0.8);
+                }
+            }
+        }
+
+        // Print friendly version
+        function printFriendly() {
+            window.print();
+        }
+
+        // Add print button functionality
+        const printBtn = document.createElement('button');
+        printBtn.innerHTML = '🖨️';
+        printBtn.style.position = 'fixed';
+        printBtn.style.bottom = '100px';
+        printBtn.style.right = '30px';
+        printBtn.style.width = '60px';
+        printBtn.style.height = '60px';
+        printBtn.style.borderRadius = '50%';
+        printBtn.style.background = 'var(--primary-green)';
+        printBtn.style.color = 'white';
+        printBtn.style.border = '2px solid white';
+        printBtn.style.cursor = 'pointer';
+        printBtn.style.boxShadow = '0 6px 20px rgba(46, 125, 50, 0.3)';
+        printBtn.style.fontSize = '1.5rem';
+        printBtn.style.transition = 'var(--transition)';
+        printBtn.style.zIndex = '999';
+        printBtn.style.display = 'flex';
+        printBtn.style.alignItems = 'center';
+        printBtn.style.justifyContent = 'center';
+        
+        printBtn.addEventListener('mouseenter', function() {
+            this.style.transform = 'scale(1.1) rotate(-10deg)';
+            this.style.background = 'var(--light-green)';
+        });
+        
+        printBtn.addEventListener('mouseleave', function() {
+            this.style.transform = 'scale(1)';
+            this.style.background = 'var(--primary-green)';
+        });
+        
+        printBtn.addEventListener('click', printFriendly);
+        document.body.appendChild(printBtn);
+
+        // Add print styles
+        const printStyles = document.createElement('style');
+        printStyles.innerHTML = `
+            @media print {
+                .floating-nav, .progress-bar, nav, .print-btn {
+                    display: none !important;
+                }
+                
+                body {
+                    background: white !important;
+                    color: black !important;
+                }
+                
+                .section {
+                    box-shadow: none !important;
+                    border: 1px solid #ccc !important;
+                    page-break-inside: avoid !important;
+                }
+                
+                h2, h3 {
+                    color: black !important;
+                }
+            }
+        `;
+        document.head.appendChild(printStyles);
+    </script>
+</body>
+</html>
