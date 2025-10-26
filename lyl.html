@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Halbman v. Lemke 案例分析</title>
+    <style>
+        :root {
+            --primary: #0d1b2a;
+            --secondary: #1b263b;
+            --accent: #c09f6a;
+            --text: #e0e1dd;
+            --text-secondary: #a9b4c2;
+            --bg: #0a0f18;
+            --card-bg: rgba(27, 38, 59, 0.6);
+            --glass: rgba(255, 255, 255, 0.08);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+            background: linear-gradient(135deg, var(--bg) 0%, #0d1b2a 100%);
+            color: var(--text);
+            line-height: 1.7;
+            overflow-x: hidden;
+            min-height: 100vh;
+            background-attachment: fixed;
+            background-size: cover;
+            position: relative;
+        }
+
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 10% 20%, rgba(192, 159, 106, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(13, 27, 42, 0.3) 0%, transparent 30%);
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 80px 0 60px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 4px;
+            background: var(--accent);
+            border-radius: 2px;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            background: linear-gradient(to right, var(--text), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .subtitle {
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+
+        .designer {
+            font-size: 1rem;
+            color: var(--accent);
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .section {
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .section::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent), transparent);
+            opacity: 0.7;
+        }
+
+        .section:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+        }
+
+        .section-title {
+            font-size: 2.2rem;
+            color: var(--text);
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            position: relative;
+            font-weight: 600;
+        }
+
+        .section-title::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 80px;
+            height: 3px;
+            background: var(--accent);
+            border-radius: 3px;
+        }
+
+        .subsection {
+            margin-bottom: 30px;
+            padding-left: 20px;
+            border-left: 3px solid var(--accent);
+        }
+
+        .subsection-title {
+            font-size: 1.5rem;
+            color: var(--accent);
+            margin-bottom: 15px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+
+        .subsection-title::before {
+            content: "•";
+            margin-right: 10px;
+            font-size: 1.8rem;
+            color: var(--accent);
+        }
+
+        .subsection-content {
+            color: var(--text-secondary);
+            line-height: 1.8;
+        }
+
+        .vocabulary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .vocab-item {
+            background: rgba(13, 27, 42, 0.4);
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid var(--accent);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .vocab-item::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(192, 159, 106, 0.1), transparent);
+            z-index: -1;
+        }
+
+        .vocab-item:hover {
+            transform: translateY(-5px);
+            background: rgba(13, 27, 42, 0.6);
+        }
+
+        .vocab-term {
+            font-weight: 600;
+            color: var(--accent);
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .vocab-term::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: rgba(192, 159, 106, 0.3);
+            margin-left: 10px;
+        }
+
+        .vocab-meaning {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .sentence-examples {
+            background: rgba(13, 27, 42, 0.4);
+            padding: 25px;
+            border-radius: 15px;
+            margin-top: 20px;
+            border: 1px solid rgba(192, 159, 106, 0.1);
+        }
+
+        .sentence-item {
+            margin-bottom: 20px;
+            padding: 20px;
+            background: rgba(10, 15, 24, 0.5);
+            border-radius: 10px;
+            border-left: 3px solid var(--accent);
+            transition: var(--transition);
+        }
+
+        .sentence-item:hover {
+            background: rgba(10, 15, 24, 0.7);
+            transform: translateX(5px);
+        }
+
+        .sentence-en {
+            color: var(--text);
+            font-style: italic;
+            margin-bottom: 10px;
+            font-size: 1.05rem;
+            line-height: 1.6;
+            position: relative;
+            padding-left: 15px;
+        }
+
+        .sentence-en::before {
+            content: """;
+            position: absolute;
+            left: 0;
+            top: -5px;
+            font-size: 2rem;
+            color: var(--accent);
+            opacity: 0.5;
+        }
+
+        .sentence-zh {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, rgba(192, 159, 106, 0.2) 0%, rgba(192, 159, 106, 0.1) 100%);
+            padding: 2px 8px;
+            border-radius: 4px;
+            color: var(--accent);
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .highlight:hover {
+            background: linear-gradient(120deg, rgba(192, 159, 106, 0.3) 0%, rgba(192, 159, 106, 0.2) 100%);
+        }
+
+        .method-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .method-list li {
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(169, 180, 194, 0.1);
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .method-list li:last-child {
+            border-bottom: none;
+        }
+
+        .method-list li::before {
+            content: "➤";
+            color: var(--accent);
+            font-weight: bold;
+            margin-right: 15px;
+            font-size: 1.2rem;
+            min-width: 24px;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .section {
+                padding: 25px;
+            }
+            
+            .section-title {
+                font-size: 1.8rem;
+            }
+            
+            .vocabulary-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            header {
+                padding: 60px 0 40px;
+            }
+        }
+
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: var(--transition);
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .interactive-element {
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .interactive-element:hover {
+            background: rgba(192, 159, 106, 0.1);
+            transform: translateY(-3px);
+        }
+
+        .interactive-element::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: width 0.3s ease;
+        }
+
+        .interactive-element:hover::after {
+            width: 100%;
+        }
+
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: help;
+            border-bottom: 1px dashed var(--accent);
+            transition: var(--transition);
+        }
+
+        .tooltip:hover {
+            border-bottom-style: solid;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 240px;
+            background: var(--secondary);
+            color: var(--text);
+            text-align: center;
+            border-radius: 8px;
+            padding: 12px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.9rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+            line-height: 1.5;
+        }
+
+        .tooltip .tooltiptext::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: var(--secondary) transparent transparent transparent;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Halbman v. Lemke</h1>
+            <p class="subtitle">Supreme Court of Wisconsin, 1980</p>
+            <p class="designer">设计者: 吕依林</p>
+        </header>
+
+        <section class="section fade-in">
+            <h2 class="section-title">1. 设计工具、方法、过程</h2>
+            
+            <div class="subsection">
+                <h3 class="subsection-title">设计工具</h3>
+                <ul class="method-list">
+                    <li>HTML5 + CSS3 构建响应式布局</li>
+                    <li>CSS Grid 和 Flexbox 实现自适应网格系统</li>
+                    <li>原生 JavaScript 实现交互效果</li>
+                    <li>CSS 动画实现平滑过渡效果</li>
+                </ul>
+            </div>
+
+            <div class="subsection">
+                <h3 class="subsection-title">设计方法</h3>
+                <ul class="method-list">
+                    <li>移动优先设计原则，确保在各种设备上的良好体验</li>
+                    <li>采用现代渐变配色方案，营造专业法律文档氛围</li>
+                    <li>卡片式布局增强内容可读性</li>
+                    <li>交互动画提升用户体验</li>
+                </ul>
+            </div>
+
+            <div class="subsection">
+                <h3 class="subsection-title">设计过程</h3>
+                <ul class="method-list">
+                    <li>分析案例内容，提取关键信息点</li>
+                    <li>设计信息架构，组织内容层次</li>
+                    <li>创建响应式布局原型</li>
+                    <li>添加交互元素和动画效果</li>
+                    <li>优化移动端显示效果</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="section fade-in">
+            <h2 class="section-title">2. 法庭意见书要素</h2>
+            
+            <div class="subsection">
+                <h3 class="subsection-title">Case Background</h3>
+                <div class="subsection-content">
+                    <p>James Halbman, a minor, purchased a 1968 Oldsmobile from Michael Lemke for <span class="highlight">$1,250</span>. The contract was made on <span class="highlight">July 13, 1973</span>, with Halbman paying <span class="highlight">$1,000</span> initially and agreeing to pay <span class="highlight">$25 per week</span> until the balance was paid.
+[James Halbman,Jr.,a minor, entered into a contract to purchase a 1968 Oldsmobile from Michael Lemke for $1,250, $25 paid weekly.Halbman paid $1,100 over several weeks but had not fully paid when a connecting rod in the engine broke. Lemke offered to install a used engine if Halbman bought one (while disclaiming liability),but Halbman instead had the car repaired at a garage for $637.40(which he did not pay). Lemke transferred the car title to Halbman (even though the car was not paid off, likely to avoid liability).Halbman then returned the title, disaffirmed the contract, and demanded a refund of all payments. Lemke refused. Subsequently,the garage, unpaid for repairs, removed the engine and transmission and towed the car to Halbmans fathers house. Lemke refused to remove the car, and it was vandalized multiple times, rendering it unsalvageable.]</p>
+                </div>
+            </div>
+
+            <div class="subsection">
+                <h3 class="subsection-title">Key Issues</h3>
+                <div class="subsection-content">
+                    <ul style="margin-left: 20px; color: #a9b4c2;">
+                        <li>Whether a minor must make restitution for damage to property prior to disaffirmance</li>
+                        <li>The scope of the infancy doctrine protection</li>
+                        <li>Balance between minor protection and vendor rights</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="subsection">
+                <h3 class="subsection-title">Court's Holding</h3>
+                <div class="subsection-content">
+                    <p>The court held that <span class="highlight">a minor who disaffirms a contract for the purchase of an item which is not a necessity may recover his purchase price without liability for use, depreciation, damage, or other diminution in value</span>, absent misrepresentation or tortious damage to the property.</p>
+                </div>
+            </div>
+
+            <div class="subsection">
+                <h3 class="subsection-title">Rationale</h3>
+                <div class="subsection-content">
+                    <p>The infancy doctrine is designed to protect minors from improvident contracts. Requiring restitution for depreciation would <span class="tooltip">defeat this purpose<span class="tooltiptext">The court emphasized that such a requirement would force minors to bear the cost of the very improvidence from which the infancy doctrine is supposed to protect them.</span></span> by binding the minor to obligations the law allows them to avoid.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section fade-in">
+            <h2 class="section-title">3. 双语知识库</h2>
+            
+            <div class="subsection">
+                <h3 class="subsection-title">核心术语 (20词)</h3>
+                <div class="vocabulary-grid">
+                    <div class="vocab-item">
+                        <div class="vocab-term">Disaffirm</div>
+                        <div class="vocab-meaning">拒绝履行（合同）</div>
+                    </div>
+                    <div class="vocab-item">
+                        <div class="vocab-term">Infancy Doctrine</div>
+                        <div class="vocab-meaning">未成年人保护原则</div>
+                    </div>
+                    <div class="vocab-item">
+                        <div class="vocab-term">Restitution</div>
+                        <div class="vocab-meaning">恢复原状/返还</div>
+                    </div>
+                    <div class="vocab-item">
+                        <div class="vocab-term">Consideration</div>
+                        <div class="vocab-meaning">对价</div>
+                    </div>
+                    <div class="vocab-item">
+                        <div class="vocab-term">Necessity</div>
+                        <div class="vocab-meaning">必需品</div>
+                    </div>
+                    <div class="vocab-item">
+                        <div class="vocab-term">Voidable</div>
+                        <div class="vocab-meaning">可撤销的</div>
+                    </div>
+                    <div class="vocab-item">
+                        <div class="vocab-term">Minor</div>
+                        <div class="vocab-meaning">未成年人</div>
+                    </div>
+                    <div class="vocab-item">
+                        <div class="vocab-term">Vendor</div>
+                        <div class="vocab-meaning">卖方</div>
+                    </div>
+                    <div class="vocab-item">
+                        <div class="vocab-term">Vendee</div>
+                        <div class="vocab-meaning">买方</div>
+                    </div>
+                    <div class="vocab-item">
+                        <div class="vocab-term">Contract</div>
+                        <div class="vocab-meaning">合同</div>
+                    </div>
+                    <div class="vocab-item">
+                        <div class="vocab-term">Tortious</div>
+                        <div class="vocab-meaning">侵权的</div>
+                    </div>
+                    <div class="vocab-item">
+                        <div class="vocab-term">Misrepresentation</div>
+                        <div class="vocab-meaning">虚假陈述</div>
+                    </div>
+                    <div class="vocab-item">
+                        <div class="vocab-term">Depreciation</div>
+                        <div class="vocab-meaning">贬值</div>
+                    </div>
+                    <div class="vocab-item">
+                        <div class="vocab-term">Lien</div>
+                        <div class="vocab-meaning">留置权</div>
+                    </div>
+                    <div class="vocab-item">
+                        <div class="vocab-term">Title</div>
+                        <div class="vocab-meaning">所有权</div>
+                    </div>
+                    <div class="vocab-item">
+                        <div class="vocab-term">Circuit Court</div>
+                        <div class="vocab-meaning">巡回法院</div>
+                    </div>
+                    <div class="vocab-item">
+                        <div class="vocab-term">Appellate Court</div>
+                        <div class="vocab-meaning">上诉法院</div>
+                    </div>
+                    <div class="vocab-item">
+                        <div class="vocab-term">Judgment</div>
+                        <div class="vocab-meaning">判决</div>
+                    </div>
+                    <div class="vocab-item">
+                        <div class="vocab-term">Counterclaim</div>
+                        <div class="vocab-meaning">反诉</div>
+                    </div>
+                    <div class="vocab-item">
+                        <div class="vocab-term">Vandalism</div>
+                        <div class="vocab-meaning">故意破坏</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="subsection">
+                <h3 class="subsection-title">重要短语 (10短语)</h3>
+                <div class="vocabulary-grid">
+                    <div class="vocab-item">
+                        <div class="vocab-term">Disaffirm a contract</div>
+                        <div class="vocab-meaning">拒绝履行合同</div>
+                    </div>
+                    <div class="vocab-item">
+                        <div class="vocab-term">Make restitution</div>
+                        <div class="vocab-meaning">进行赔偿/恢复原状</div>
+                    </div>
+                    <div class="vocab-item">
+                        <div class="vocab-term">Void or voidable</div>
+                        <div class="vocab-meaning">无效或可撤销</div>
+                    </div>
+                    <div class="vocab-item">
+                        <div class="vocab-term">At the minor's option</div>
+                        <div class="vocab-meaning">由未成年人选择</div>
+                    </div>
+                    <div class="vocab-item">
+                        <div class="vocab-term">Items of necessity</div>
+                        <div class="vocab-meaning">必需品</div>
+                    </div>
+                    <div class="vocab-item">
+                        <div class="vocab-term">Purchase price</div>
+                        <div class="vocab-meaning">购买价格</div>
+                    </div>
+                    <div class="vocab-item">
+                        <div class="vocab-term">Diminution in value</div>
+                        <div class="vocab-meaning">价值减少</div>
+                    </div>
+                    <div class="vocab-item">
+                        <div class="vocab-term">Tortious damage</div>
+                        <div class="vocab-meaning">侵权损害</div>
+                    </div>
+                    <div class="vocab-item">
+                        <div class="vocab-term">Innocent vendor</div>
+                        <div class="vocab-meaning">无辜卖方</div>
+                    </div>
+                    <div class="vocab-item">
+                        <div class="vocab-term">Common law tradition</div>
+                        <div class="vocab-meaning">普通法传统</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="subsection">
+                <h3 class="subsection-title">典型句型 (5句型)</h3>
+                <div class="sentence-examples">
+                    <div class="sentence-item">
+                        <div class="sentence-en">"The court held that a minor who disaffirms a contract for the purchase of an item which is not a necessity may recover his purchase price without liability for use, depreciation, damage, or other diminution in value."</div>
+                        <div class="sentence-zh">"法院裁定，拒绝购买非必需品合同的未成年人可以收回其购买价格，而无需对使用、折旧、损坏或其他价值减少承担责任。"</div>
+                    </div>
+                    <div class="sentence-item">
+                        <div class="sentence-en">"The infancy doctrine is designed to protect minors from foolishly squandering their wealth through improvident contracts."</div>
+                        <div class="sentence-zh">"未成年人保护原则旨在保护未成年人避免因轻率合同而愚蠢地挥霍财富。"</div>
+                    </div>
+                    <div class="sentence-item">
+                        <div class="sentence-en">"A contract of a minor for items which are not necessities is void or voidable at the minor's option."</div>
+                        <div class="sentence-zh">"未成年人购买非必需品的合同是无效的或可由未成年人选择撤销的。"</div>
+                    </div>
+                    <div class="sentence-item">
+                        <div class="sentence-en">"The minor's right to disaffirm is not contingent upon the return of the property."</div>
+                        <div class="sentence-zh">"未成年人拒绝履行合同的权利并不取决于财产的返还。"</div>
+                    </div>
+                    <div class="sentence-item">
+                        <div class="sentence-en">"Absent misrepresentation or tortious damage to the property, the minor need not make restitution for diminished value."</div>
+                        <div class="sentence-zh">"在没有虚假陈述或对财产的侵权损害的情况下，未成年人无需为价值减少进行赔偿。"</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // 添加滚动动画效果
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in').forEach(el => {
+            observer.observe(el);
+        });
+
+        // 添加点击交互效果
+        document.querySelectorAll('.interactive-element').forEach(element => {
+            element.addEventListener('click', function() {
+                this.style.transform = 'scale(0.98)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 100);
+            });
+        });
+
+        // 添加词汇项点击效果
+        document.querySelectorAll('.vocab-item').forEach(item => {
+            item.addEventListener('click', function() {
+                this.style.background = 'rgba(192, 159, 106, 0.15)';
+                setTimeout(() => {
+                    this.style.background = '';
+                }, 300);
+            });
+        });
+
+        // 添加句子示例点击效果
+        document.querySelectorAll('.sentence-item').forEach(item => {
+            item.addEventListener('click', function() {
+                this.style.boxShadow = '0 0 0 2px var(--accent)';
+                setTimeout(() => {
+                    this.style.boxShadow = '';
+                }, 500);
+            });
+        });
+    </script>
+</body>
+</html>
