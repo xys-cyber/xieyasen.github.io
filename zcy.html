@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marbury v. Madison 法庭意见书分析</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 0;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .designer {
+            font-size: 1.2rem;
+            color: #7f8c8d;
+            font-weight: 300;
+        }
+
+        .section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        h2 {
+            color: #34495e;
+            font-size: 2rem;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #3498db;
+        }
+
+        h3 {
+            color: #2980b9;
+            font-size: 1.5rem;
+            margin: 25px 0 15px 0;
+        }
+
+        .tabs {
+            display: flex;
+            background: #ecf0f1;
+            border-radius: 10px;
+            padding: 5px;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 12px 20px;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .tab.active {
+            background: #3498db;
+            color: white;
+            box-shadow: 0 2px 10px rgba(52, 152, 219, 0.3);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .vocabulary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .vocab-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #3498db;
+            transition: transform 0.3s ease;
+        }
+
+        .vocab-card:hover {
+            transform: scale(1.05);
+        }
+
+        .vocab-term {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .vocab-definition {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+
+        .sentence-examples {
+            background: #e8f4f8;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .sentence {
+            margin: 10px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 5px;
+            font-style: italic;
+        }
+
+        .process-step {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .step-number {
+            width: 50px;
+            height: 50px;
+            background: #3498db;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 20px;
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .section {
+                padding: 20px;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .vocabulary-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, #a8edea 0%, #fed6e3 100%);
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+
+        .interactive-element {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .interactive-element:hover {
+            color: #3498db;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Marbury v. Madison 法庭意见书分析</h1>
+            <p class="designer">设计者：张晨钰</p>
+        </header>
+
+        <div class="section">
+            <h2>1. 设计工具、方法、过程</h2>
+            
+            <div class="process-step">
+                <div class="step-number">1</div>
+                <div>
+                    <h3>需求分析</h3>
+                    <p>深入分析案件内容，确定需要展示的关键信息和功能模块。通过阅读1803年马伯里诉麦迪逊案的完整法庭意见书，提取核心法律要点和历史意义。</p>
+                </div>
+            </div>
+
+            <div class="process-step">
+                <div class="step-number">2</div>
+                <div>
+                    <h3>设计工具</h3>
+                    <p>使用 <span class="highlight">Figma</span> 进行界面原型设计，采用 <span class="highlight">Visual Studio Code</span> 进行代码开发，利用 <span class="highlight">Chrome DevTools</span> 进行响应式测试。</p>
+                </div>
+            </div>
+
+            <div class="process-step">
+                <div class="step-number">3</div>
+                <div>
+                    <h3>交互设计</h3>
+                    <p>采用卡片式布局和标签页切换，确保信息层次清晰。实现悬停效果、平滑过渡动画，提升用户体验。所有交互元素都经过精心设计，确保直观易用。</p>
+                </div>
+            </div>
+
+            <div class="process-step">
+                <div class="step-number">4</div>
+                <div>
+                    <h3>响应式实现</h3>
+                    <p>使用CSS Grid和Flexbox构建自适应布局，通过媒体查询实现移动端优化。确保在各种设备上都能获得最佳的阅读和交互体验。</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>2. 法庭意见书要素</h2>
+            
+            <div class="tabs">
+                <div class="tab active" onclick="switchTab(event, 'case-summary')">案件摘要</div>
+                <div class="tab" onclick="switchTab(event, 'legal-principles')">法律原则</div>
+                <div class="tab" onclick="switchTab(event, 'judicial-review')">司法审查</div>
+                <div class="tab" onclick="switchTab(event, 'constitutional-issues')">宪法问题</div>
+            </div>
+
+            <div id="case-summary" class="tab-content active">
+                <h3>Case Summary</h3>
+                <p><strong>Marbury v. Madison</strong> (1803) established the principle of <span class="interactive-element">judicial review</span> in the United States. William Marbury was appointed as a justice of the peace by President John Adams, but his commission was not delivered by Secretary of State James Madison.</p>
+                
+                <h3>Key Facts</h3>
+                <ul>
+                    <li>Appointment made by outgoing President Adams</li>
+                    <li>Commission signed but not delivered</li>
+                    <li>Marbury sought a writ of mandamus</li>
+                    <li>Supreme Court had to determine its own jurisdiction</li>
+                </ul>
+
+                <h3>Court's Decision</h3>
+                <p>The Court held that while Marbury had a right to his commission, the section of the Judiciary Act of 1789 that gave the Supreme Court original jurisdiction to issue writs of mandamus was <span class="highlight">unconstitutional</span>.</p>
+            </div>
+
+            <div id="legal-principles" class="tab-content">
+                <h3>Fundamental Legal Principles</h3>
+                
+                <h3>1. Separation of Powers</h3>
+                <p>The Constitution establishes three distinct branches of government, each with its own powers and responsibilities. The judiciary's role is to interpret the law, not to create or enforce it.</p>
+
+                <h3>2. Constitutional Supremacy</h3>
+                <p>The Constitution is the <span class="highlight">supreme law of the land</span>. Any law that conflicts with the Constitution is void and unenforceable.</p>
+
+                <h3>3. Judicial Review</h3>
+                <p>Courts have the power to review the constitutionality of legislative and executive actions. This power is essential to maintaining the balance of power among the three branches.</p>
+
+                <h3>4. Limited Government</h3>
+                <p>The federal government is one of <span class="interactive-element">enumerated powers</span>. It can only exercise those powers specifically granted to it by the Constitution.</p>
+            </div>
+
+            <div id="judicial-review" class="tab-content">
+                <h3>Establishment of Judicial Review</h3>
+                
+                <p>Chief Justice John Marshall's opinion established that:</p>
+                
+                <div class="sentence-examples">
+                    <div class="sentence">
+                        "It is emphatically the province and duty of the judicial department to say what the law is."
+                    </div>
+                    <div class="sentence">
+                        "A law repugnant to the Constitution is void, and courts, as well as other departments, are bound by that instrument."
+                    </div>
+                </div>
+
+                <h3>Significance</h3>
+                <p>This decision made the judiciary a co-equal branch of government with the power to interpret the Constitution and strike down laws that violate it. It established the principle that the Constitution is a <span class="highlight">living document</span> that must be interpreted by an independent judiciary.</p>
+
+                <h3>Impact on American Law</h3>
+                <p>Judicial review has become a cornerstone of American constitutional law, ensuring that all government actions comply with constitutional requirements and protecting individual rights against government overreach.</p>
+            </div>
+
+            <div id="constitutional-issues" class="tab-content">
+                <h3>Constitutional Questions Addressed</h3>
+                
+                <h3>1. Jurisdiction</h3>
+                <p>Whether the Supreme Court had original jurisdiction to issue writs of mandamus under the Judiciary Act of 1789.</p>
+
+                <h3>2. Appointment Power</h3>
+                <p>The distinction between appointment and commission, and when an appointment becomes complete under the Constitution.</p>
+
+                <h3>3. Remedies</h3>
+                <p>Whether the judiciary can provide remedies for violations of legal rights, even against executive officials.</p>
+
+                <h3>4. Constitutional Interpretation</h3>
+                <p>How to interpret the Constitution's provisions regarding the judicial power and the separation of powers.</p>
+
+                <h3>Long-term Constitutional Impact</h3>
+                <p>This case established the judiciary as the final interpreter of the Constitution and created a system of <span class="interactive-element">constitutional checks and balances</span> that continues to shape American government today.</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>3. 双语知识库</h2>
+            
+            <h3>Legal Terms (20 words)</h3>
+            <div class="vocabulary-grid">
+                <div class="vocab-card">
+                    <div class="vocab-term">Judicial Review</div>
+                    <div class="vocab-definition">司法审查 - Court's power to examine laws for constitutionality</div>
+                </div>
+                <div class="vocab-card">
+                    <div class="vocab-term">Mandamus</div>
+                    <div class="vocab-definition">训令状 - Court order compelling government action</div>
+                </div>
+                <div class="vocab-card">
+                    <div class="vocab-term">Commission</div>
+                    <div class="vocab-definition">委任状 - Official document appointing to office</div>
+                </div>
+                <div class="vocab-card">
+                    <div class="vocab-term">Jurisdiction</div>
+                    <div class="vocab-definition">管辖权 - Court's authority to hear cases</div>
+                </div>
+                <div class="vocab-card">
+                    <div class="vocab-term">Constitution</div>
+                    <div class="vocab-definition">宪法 - Fundamental law of the land</div>
+                </div>
+                <div class="vocab-card">
+                    <div class="vocab-term">Appointment</div>
+                    <div class="vocab-definition">任命 - Act of selecting for office</div>
+                </div>
+                <div class="vocab-card">
+                    <div class="vocab-term">Original Jurisdiction</div>
+                    <div class="vocab-definition">初审管辖权 - Court's power to hear cases first</div>
+                </div>
+                <div class="vocab-card">
+                    <div class="vocab-term">Appellate Jurisdiction</div>
+                    <div class="vocab-definition">上诉管辖权 - Court's power to review lower court decisions</div>
+                </div>
+                <div class="vocab-card">
+                    <div class="vocab-term">Separation of Powers</div>
+                    <div class="vocab-definition">三权分立 - Division of government into branches</div>
+                </div>
+                <div class="vocab-card">
+                    <div class="vocab-term">Supremacy Clause</div>
+                    <div class="vocab-definition">最高条款 - Constitution as supreme law</div>
+                </div>
+                <div class="vocab-card">
+                    <div class="vocab-term">Enumerated Powers</div>
+                    <div class="vocab-definition">列举权力 - Specifically granted governmental powers</div>
+                </div>
+                <div class="vocab-card">
+                    <div class="vocab-term">Checks and Balances</div>
+                    <div class="vocab-definition">制衡机制 - System preventing any branch from dominating</div>
+                </div>
+                <div class="vocab-card">
+                    <div class="vocab-term">Writ</div>
+                    <div class="vocab-definition">令状 - Formal written order from court</div>
+                </div>
+                <div class="vocab-card">
+                    <div class="vocab-term">Justice of the Peace</div>
+                    <div class="vocab-definition">太平绅士 - Local judicial officer</div>
+                </div>
+                <div class="vocab-card">
+                    <div class="vocab-term">Secretary of State</div>
+                    <div class="vocab-definition">国务卿 - Chief foreign affairs officer</div>
+                </div>
+                <div class="vocab-card">
+                    <div class="vocab-term">Judiciary Act</div>
+                    <div class="vocab-definition">司法法案 - Law establishing court system</div>
+                </div>
+                <div class="vocab-card">
+                    <div class="vocab-term">Constitutional Interpretation</div>
+                    <div class="vocab-definition">宪法解释 - Process of understanding constitutional meaning</div>
+                </div>
+                <div class="vocab-card">
+                    <div class="vocab-term">Legal Remedy</div>
+                    <div class="vocab-definition">法律救济 - Judicial solution for rights violations</div>
+                </div>
+                <div class="vocab-card">
+                    <div class="vocab-term">Political Question</div>
+                    <div class="vocab-definition">政治问题 - Issue for political branches, not courts</div>
+                </div>
+                <div class="vocab-card">
+                    <div class="vocab-term">Stare Decisis</div>
+                    <div class="vocab-definition">遵循先例 - Principle of following judicial precedents</div>
+                </div>
+            </div>
+
+            <h3>Legal Phrases (10 phrases)</h3>
+            <div class="vocabulary-grid">
+                <div class="vocab-card">
+                    <div class="vocab-term">Rule of Law</div>
+                    <div class="vocab-definition">法治原则 - Government bound by law</div>
+                </div>
+                <div class="vocab-card">
+                    <div class="vocab-term">Due Process</div>
+                    <div class="vocab-definition">正当程序 - Fair legal proceedings</div>
+                </div>
+                <div class="vocab-card">
+                    <div class="vocab-term">Equal Protection</div>
+                    <div class="vocab-definition">平等保护 - Equal treatment under law</div>
+                </div>
+                <div class="vocab-card">
+                    <div class="vocab-term">Fundamental Rights</div>
+                    <div class="vocab-definition">基本权利 - Basic individual liberties</div>
+                </div>
+                <div class="vocab-card">
+                    <div class="vocab-term">Judicial Independence</div>
+                    <div class="vocab-definition">司法独立 - Courts free from political pressure</div>
+                </div>
+                <div class="vocab-card">
+                    <div class="vocab-term">Constitutional Democracy</div>
+                    <div class="vocab-definition">宪政民主 - Democratic system with constitutional limits</div>
+                </div>
+                <div class="vocab-card">
+                    <div class="vocab-term">Limited Government</div>
+                    <div class="vocab-definition">有限政府 - Government with restricted powers</div>
+                </div>
+                <div class="vocab-card">
+                    <div class="vocab-term">Popular Sovereignty</div>
+                    <div class="vocab-definition">人民主权 - Power derives from the people</div>
+                </div>
+                <div class="vocab-card">
+                    <div class="vocab-term">Federalism</div>
+                    <div class="vocab-definition">联邦制 - Division of power between national and state governments</div>
+                </div>
+                <div class="vocab-card">
+                    <div class="vocab-term">Civil Liberties</div>
+                    <div class="vocab-definition">公民自由 - Individual freedoms protected from government interference</div>
+                </div>
+            </div>
+
+            <h3>Typical Sentence Patterns (5 patterns)</h3>
+            <div class="sentence-examples">
+                <div class="sentence">
+                    <strong>Pattern 1:</strong> "It is emphatically the province and duty of the judicial department to say what the law is."
+                    <br><em>这是司法部门明确职责所在，即阐明法律是什么。</em>
+                </div>
+                <div class="sentence">
+                    <strong>Pattern 2:</strong> "A law repugnant to the Constitution is void."
+                    <br><em>与宪法相抵触的法律是无效的。</em>
+                </div>
+                <div class="sentence">
+                    <strong>Pattern 3:</strong> "The Constitution is the supreme law of the land."
+                    <br><em>宪法是国家的最高法律。</em>
+                </div>
+                <div class="sentence">
+                    <strong>Pattern 4:</strong> "Courts are bound by the Constitution, not by ordinary legislative acts."
+                    <br><em>法院受宪法约束，而不受普通立法行为的约束。</em>
+                </div>
+                <div class="sentence">
+                    <strong>Pattern 5:</strong> "The judicial power extends to all cases arising under the Constitution."
+                    <br><em>司法权涵盖所有根据宪法产生的案件。</em>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function switchTab(event, tabId) {
+            // Hide all tab contents
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(content => {
+                content.classList.remove('active');
+            });
+
+            // Remove active class from all tabs
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Show selected tab content
+            document.getElementById(tabId).classList.add('active');
+
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+        }
+
+        // Add hover effects to interactive elements
+        document.querySelectorAll('.interactive-element').forEach(element => {
+            element.addEventListener('click', function() {
+                alert('This is a key legal concept in the Marbury v. Madison case!');
+            });
+        });
+
+        // Smooth scrolling for better UX
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>
