@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marbury v. Madison 法庭意见书分析</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 0;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(52, 152, 219, 0.1), transparent);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .designer {
+            font-size: 1.2rem;
+            color: #7f8c8d;
+            font-weight: 300;
+            position: relative;
+            z-index: 1;
+        }
+
+        .section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+        }
+
+        .section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        h2 {
+            color: #34495e;
+            font-size: 2rem;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #3498db;
+            position: relative;
+        }
+
+        h3 {
+            color: #2980b9;
+            font-size: 1.5rem;
+            margin: 25px 0 15px 0;
+        }
+
+        .tabs {
+            display: flex;
+            background: #ecf0f1;
+            border-radius: 10px;
+            padding: 5px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 12px 20px;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            position: relative;
+        }
+
+        .tab.active {
+            background: #3498db;
+            color: white;
+            box-shadow: 0 2px 10px rgba(52, 152, 219, 0.3);
+        }
+
+        .tab::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: #3498db;
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .tab:hover::after {
+            width: 80%;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .vocabulary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .vocab-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #3498db;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .vocab-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .vocab-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(52, 152, 219, 0.1), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .vocab-card:hover::before {
+            opacity: 1;
+        }
+
+        .vocab-term {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 5px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .vocab-definition {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .sentence-examples {
+            background: #e8f4f8;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .sentence {
+            margin: 10px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 5px;
+            font-style: italic;
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        .sentence:hover {
+            transform: translateX(5px);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .process-step {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .process-step:hover {
+            transform: translateX(10px);
+        }
+
+        .step-number {
+            width: 50px;
+            height: 50px;
+            background: #3498db;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 20px;
+            flex-shrink: 0;
+            transition: transform 0.3s ease;
+        }
+
+        .process-step:hover .step-number {
+            transform: scale(1.1);
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .section {
+                padding: 20px;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .vocabulary-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, #a8edea 0%, #fed6e3 100%);
+            padding: 2px 5px;
+            border-radius: 3px;
+            transition: transform 0.3s ease;
+        }
+
+        .highlight:hover {
+            transform: scale(1.05);
+        }
+
+        .interactive-element {
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .interactive-element:hover {
+            color: #3498db;
+            transform: scale(1.05);
+        }
+
+        /* New Interactive Elements */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 4px;
+            background: linear-gradient(90deg, #3498db, #2ecc71);
+            transition: width 0.3s ease;
+            z-index: 1000;
+        }
+
+        .floating-nav {
+            position: fixed;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            padding: 10px;
+            z-index: 999;
+        }
+
+        .nav-item {
+            display: block;
+            width: 40px;
+            height: 40px;
+            margin: 5px 0;
+            border-radius: 50%;
+            background: #ecf0f1;
+            color: #7f8c8d;
+            text-align: center;
+            line-height: 40px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.8rem;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: #3498db;
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .quiz-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .quiz-content {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .quiz-question {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .quiz-option {
+            padding: 15px;
+            background: #f8f9fa;
+            border: 2px solid transparent;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .quiz-option:hover {
+            border-color: #3498db;
+            background: #e8f4f8;
+        }
+
+        .quiz-option.correct {
+            background: #d4edda;
+            border-color: #28a745;
+        }
+
+        .quiz-option.incorrect {
+            background: #f8d7da;
+            border-color: #dc3545;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 30px;
+            height: 30px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .close-btn:hover {
+            transform: rotate(90deg);
+        }
+
+        .dark-mode-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background: #2c3e50;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+            z-index: 999;
+        }
+
+        .dark-mode-toggle:hover {
+            transform: scale(1.1);
+            background: #34495e;
+        }
+
+        body.dark-mode {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: #ecf0f1;
+        }
+
+        body.dark-mode .section,
+        body.dark-mode header {
+            background: rgba(52, 73, 94, 0.95);
+            color: #ecf0f1;
+        }
+
+        body.dark-mode h2,
+        body.dark-mode h3 {
+            color: #3498db;
+        }
+
+        body.dark-mode .vocab-card,
+        body.dark-mode .sentence-examples,
+        body.dark-mode .process-step {
+            background: #34495e;
+        }
+
+        body.dark-mode .highlight {
+            background: linear-gradient(120deg, #3498db 0%, #2ecc71 100%);
+            color: white;
+        }
+
+        .search-box {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 998;
+        }
+
+        .search-input {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 25px;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            width: 250px;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            box-shadow: 0 5px 20px rgba(52, 152, 219, 0.3);
+            width: 300px;
+        }
+
+        .highlight-search {
+            background: yellow;
+            color: black;
+            padding: 2px 4px;
+            border-radius: 3px;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-bar" id="progressBar"></div>
+    
+    <div class="floating-nav" id="floatingNav">
+        <div class="nav-item" onclick="scrollToSection(0)" title="设计工具">1</div>
+        <div class="nav-item" onclick="scrollToSection(1)" title="法庭意见书">2</div>
+        <div class="nav-item" onclick="scrollToSection(2)" title="双语知识库">3</div>
+        <div class="nav-item" onclick="openQuiz()" title="知识测验">?</div>
+    </div>
+
+    <div class="search-box">
+        <input type="text" class="search-input" placeholder="搜索内容..." id="searchInput">
+    </div>
+
+    <button class="dark-mode-toggle" id="darkModeToggle" title="切换深色模式">🌙</button>
+
+    <div class="container">
+        <header>
+            <h1>Marbury v. Madison 法庭意见书分析</h1>
+            <p class="designer">设计者：张晨钰</p>
+        </header>
+
+        <div class="section">
+            <h2>1. 设计工具、方法、过程</h2>
+            
+            <div class="process-step">
+                <div class="step-number">1</div>
+                <div>
+                    <h3>需求分析</h3>
+                    <p>深入分析案件内容，确定需要展示的关键信息和功能模块。通过阅读1803年马伯里诉麦迪逊案的完整法庭意见书，提取核心法律要点和历史意义。</p>
+                </div>
+            </div>
+
+            <div class="process-step">
+                <div class="step-number">2</div>
+                <div>
+                    <h3>设计工具</h3>
+                    <p>使用 <span class="highlight">Figma</span> 进行界面原型设计，采用 <span class="highlight">Visual Studio Code</span> 进行代码开发，利用 <span class="highlight">Chrome DevTools</span> 进行响应式测试。</p>
+                </div>
+            </div>
+
+            <div class="process-step">
+                <div class="step-number">3</div>
+                <div>
+                    <h3>交互设计</h3>
+                    <p>采用卡片式布局和标签页切换，确保信息层次清晰。实现悬停效果、平滑过渡动画，提升用户体验。所有交互元素都经过精心设计，确保直观易用。</p>
+                </div>
+            </div>
+
+            <div class="process-step">
+                <div class="step-number">4</div>
+                <div>
+                    <h3>响应式实现</h3>
+                    <p>使用CSS Grid和Flexbox构建自适应布局，通过媒体查询实现移动端优化。确保在各种设备上都能获得最佳的阅读和交互体验。</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>2. 法庭意见书要素</h2>
+            
+            <div class="tabs">
+                <div class="tab active" onclick="switchTab(event, 'case-summary')">案件摘要</div>
+                <div class="tab" onclick="switchTab(event, 'legal-principles')">法律原则</div>
+                <div class="tab" onclick="switchTab(event, 'judicial-review')">司法审查</div>
+                <div class="tab" onclick="switchTab(event, 'constitutional-issues')">宪法问题</div>
+            </div>
+
+            <div id="case-summary" class="tab-content active">
+                <h3>Case Summary</h3>
+                <p><strong>Marbury v. Madison</strong> (1803) established the principle of <span class="interactive-element">judicial review</span> in the United States. William Marbury was appointed as a justice of the peace by President John Adams, but his commission was not delivered by Secretary of State James Madison.</p>
+                
+                <h3>Key Facts</h3>
+                <ul>
+                    <li>Appointment made by outgoing President Adams</li>
+                    <li>Commission signed but not delivered</li>
+                    <li>Marbury sought a writ of mandamus</li>
+                    <li>Supreme Court had to determine its own jurisdiction</li>
+                </ul>
+
+                <h3>Court's Decision</h3>
+                <p>The Court held that while Marbury had a right to his commission, the section of the Judiciary Act of 1789 that gave the Supreme Court original jurisdiction to issue writs of mandamus was <span class="highlight">unconstitutional</span>.</p>
+            </div>
+
+            <div id="legal-principles" class="tab-content">
+                <h3>Fundamental Legal Principles</h3>
+                
+                <h3>1. Separation of Powers</h3>
+                <p>The Constitution establishes three distinct branches of government, each with its own powers and responsibilities. The judiciary's role is to interpret the law, not to create or enforce it.</p>
+
+                <h3>2. Constitutional Supremacy</h3>
+                <p>The Constitution is the <span class="highlight">supreme law of the land</span>. Any law that conflicts with the Constitution is void and unenforceable.</p>
+
+                <h3>3. Judicial Review</h3>
+                <p>Courts have the power to review the constitutionality of legislative and executive actions. This power is essential to maintaining the balance of power among the three branches.</p>
+
+                <h3>4. Limited Government</h3>
+                <p>The federal government is one of <span class="interactive-element">enumerated powers</span>. It can only exercise those powers specifically granted to it by the Constitution.</p>
+            </div>
+
+            <div id="judicial-review" class="tab-content">
+                <h3>Establishment of Judicial Review</h3>
+                
+                <p>Chief Justice John Marshall's opinion established that:</p>
+                
+                <div class="sentence-examples">
+                    <div class="sentence">
+                        "It is emphatically the province and duty of the judicial department to say what the law is."
+                    </div>
+                    <div class="sentence">
+                        "A law repugnant to the Constitution is void, and courts, as well as other departments, are bound by that instrument."
+                    </div>
+                </div>
+
+                <h3>Significance</h3>
+                <p>This decision made the judiciary a co-equal branch of government with the power to interpret the Constitution and strike down laws that violate it. It established the principle that the Constitution is a <span class="highlight">living document</span> that must be interpreted by an independent judiciary.</p>
+
+                <h3>Impact on American Law</h3>
+                <p>Judicial review has become a cornerstone of American constitutional law, ensuring that all government actions comply with constitutional requirements and protecting individual rights against government overreach.</p>
+            </div>
+
+            <div id="constitutional-issues" class="tab-content">
+                <h3>Constitutional Questions Addressed</h3>
+                
+                <h3>1. Jurisdiction</h3>
+                <p>Whether the Supreme Court had original jurisdiction to issue writs of mandamus under the Judiciary Act of 1789.</p>
+
+                <h3>2. Appointment Power</h3>
+                <p>The distinction between appointment and commission, and when an appointment becomes complete under the Constitution.</p>
+
+                <h3>3. Remedies</h3>
+                <p>Whether the judiciary can provide remedies for violations of legal rights, even against executive officials.</p>
+
+                <h3>4. Constitutional Interpretation</h3>
+                <p>How to interpret the Constitution's provisions regarding the judicial power and the separation of powers.</p>
+
+                <h3>Long-term Constitutional Impact</h3>
+                <p>This case established the judiciary as the final interpreter of the Constitution and created a system of <span class="interactive-element">constitutional checks and balances</span> that continues to shape American government today.</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>3. 双语知识库</h2>
+            
+            <h3>Legal Terms (20 words)</h3>
+            <div class="vocabulary-grid">
+                <div class="vocab-card" onclick="showVocabDetail('judicial-review')">
+                    <div class="vocab-term">Judicial Review</div>
+                    <div class="vocab-definition">司法审查 - Court's power to examine laws for constitutionality</div>
+                </div>
+                <div class="vocab-card" onclick="showVocabDetail('mandamus')">
+                    <div class="vocab-term">Mandamus</div>
+                    <div class="vocab-definition">训令状 - Court order compelling government action</div>
+                </div>
+                <div class="vocab-card" onclick="showVocabDetail('commission')">
+                    <div class="vocab-term">Commission</div>
+                    <div class="vocab-definition">委任状 - Official document appointing to office</div>
+                </div>
+                <div class="vocab-card" onclick="showVocabDetail('jurisdiction')">
+                    <div class="vocab-term">Jurisdiction</div>
+                    <div class="vocab-definition">管辖权 - Court's authority to hear cases</div>
+                </div>
+                <div class="vocab-card" onclick="showVocabDetail('constitution')">
+                    <div class="vocab-term">Constitution</div>
+                    <div class="vocab-definition">宪法 - Fundamental law of the land</div>
+                </div>
+                <div class="vocab-card" onclick="showVocabDetail('appointment')">
+                    <div class="vocab-term">Appointment</div>
+                    <div class="vocab-definition">任命 - Act of selecting for office</div>
+                </div>
+                <div class="vocab-card" onclick="showVocabDetail('original-jurisdiction')">
+                    <div class="vocab-term">Original Jurisdiction</div>
+                    <div class="vocab-definition">初审管辖权 - Court's power to hear cases first</div>
+                </div>
+                <div class="vocab-card" onclick="showVocabDetail('appellate-jurisdiction')">
+                    <div class="vocab-term">Appellate Jurisdiction</div>
+                    <div class="vocab-definition">上诉管辖权 - Court's power to review lower court decisions</div>
+                </div>
+                <div class="vocab-card" onclick="showVocabDetail('separation-powers')">
+                    <div class="vocab-term">Separation of Powers</div>
+                    <div class="vocab-definition">三权分立 - Division of government into branches</div>
+                </div>
+                <div class="vocab-card" onclick="showVocabDetail('supremacy-clause')">
+                    <div class="vocab-term">Supremacy Clause</div>
+                    <div class="vocab-definition">最高条款 - Constitution as supreme law</div>
+                </div>
+                <div class="vocab-card" onclick="showVocabDetail('enumerated-powers')">
+                    <div class="vocab-term">Enumerated Powers</div>
+                    <div class="vocab-definition">列举权力 - Specifically granted governmental powers</div>
+                </div>
+                <div class="vocab-card" onclick="showVocabDetail('checks-balances')">
+                    <div class="vocab-term">Checks and Balances</div>
+                    <div class="vocab-definition">制衡机制 - System preventing any branch from dominating</div>
+                </div>
+                <div class="vocab-card" onclick="showVocabDetail('writ')">
+                    <div class="vocab-term">Writ</div>
+                    <div class="vocab-definition">令状 - Formal written order from court</div>
+                </div>
+                <div class="vocab-card" onclick="showVocabDetail('justice-peace')">
+                    <div class="vocab-term">Justice of the Peace</div>
+                    <div class="vocab-definition">太平绅士 - Local judicial officer</div>
+                </div>
+                <div class="vocab-card" onclick="showVocabDetail('secretary-state')">
+                    <div class="vocab-term">Secretary of State</div>
+                    <div class="vocab-definition">国务卿 - Chief foreign affairs officer</div>
+                </div>
+                <div class="vocab-card" onclick="showVocabDetail('judiciary-act')">
+                    <div class="vocab-term">Judiciary Act</div>
+                    <div class="vocab-definition">司法法案 - Law establishing court system</div>
+                </div>
+                <div class="vocab-card" onclick="showVocabDetail('constitutional-interpretation')">
+                    <div class="vocab-term">Constitutional Interpretation</div>
+                    <div class="vocab-definition">宪法解释 - Process of understanding constitutional meaning</div>
+                </div>
+                <div class="vocab-card" onclick="showVocabDetail('legal-remedy')">
+                    <div class="vocab-term">Legal Remedy</div>
+                    <div class="vocab-definition">法律救济 - Judicial solution for rights violations</div>
+                </div>
+                <div class="vocab-card" onclick="showVocabDetail('political-question')">
+                    <div class="vocab-term">Political Question</div>
+                    <div class="vocab-definition">政治问题 - Issue for political branches, not courts</div>
+                </div>
+                <div class="vocab-card" onclick="showVocabDetail('stare-decisis')">
+                    <div class="vocab-term">Stare Decisis</div>
+                    <div class="vocab-definition">遵循先例 - Principle of following judicial precedents</div>
+                </div>
+            </div>
+
+            <h3>Legal Phrases (10 phrases)</h3>
+            <div class="vocabulary-grid">
+                <div class="vocab-card" onclick="showPhraseDetail('rule-law')">
+                    <div class="vocab-term">Rule of Law</div>
+                    <div class="vocab-definition">法治原则 - Government bound by law</div>
+                </div>
+                <div class="vocab-card" onclick="showPhraseDetail('due-process')">
+                    <div class="vocab-term">Due Process</div>
+                    <div class="vocab-definition">正当程序 - Fair legal proceedings</div>
+                </div>
+                <div class="vocab-card" onclick="showPhraseDetail('equal-protection')">
+                    <div class="vocab-term">Equal Protection</div>
+                    <div class="vocab-definition">平等保护 - Equal treatment under law</div>
+                </div>
+                <div class="vocab-card" onclick="showPhraseDetail('fundamental-rights')">
+                    <div class="vocab-term">Fundamental Rights</div>
+                    <div class="vocab-definition">基本权利 - Basic individual liberties</div>
+                </div>
+                <div class="vocab-card" onclick="showPhraseDetail('judicial-independence')">
+                    <div class="vocab-term">Judicial Independence</div>
+                    <div class="vocab-definition">司法独立 - Courts free from political pressure</div>
+                </div>
+                <div class="vocab-card" onclick="showPhraseDetail('constitutional-democracy')">
+                    <div class="vocab-term">Constitutional Democracy</div>
+                    <div class="vocab-definition">宪政民主 - Democratic system with constitutional limits</div>
+                </div>
+                <div class="vocab-card" onclick="showPhraseDetail('limited-government')">
+                    <div class="vocab-term">Limited Government</div>
+                    <div class="vocab-definition">有限政府 - Government with restricted powers</div>
+                </div>
+                <div class="vocab-card" onclick="showPhraseDetail('popular-sovereignty')">
+                    <div class="vocab-term">Popular Sovereignty</div>
+                    <div class="vocab-definition">人民主权 - Power derives from the people</div>
+                </div>
+                <div class="vocab-card" onclick="showPhraseDetail('federalism')">
+                    <div class="vocab-term">Federalism</div>
+                    <div class="vocab-definition">联邦制 - Division of power between national and state governments</div>
+                </div>
+                <div class="vocab-card" onclick="showPhraseDetail('civil-liberties')">
+                    <div class="vocab-term">Civil Liberties</div>
+                    <div class="vocab-definition">公民自由 - Individual freedoms protected from government interference</div>
+                </div>
+            </div>
+
+            <h3>Typical Sentence Patterns (5 patterns)</h3>
+            <div class="sentence-examples">
+                <div class="sentence" onclick="speakSentence(this)">
+                    <strong>Pattern 1:</strong> "It is emphatically the province and duty of the judicial department to say what the law is."
+                    <br><em>这是司法部门明确职责所在，即阐明法律是什么。</em>
+                </div>
+                <div class="sentence" onclick="speakSentence(this)">
+                    <strong>Pattern 2:</strong> "A law repugnant to the Constitution is void."
+                    <br><em>与宪法相抵触的法律是无效的。</em>
+                </div>
+                <div class="sentence" onclick="speakSentence(this)">
+                    <strong>Pattern 3:</strong> "The Constitution is the supreme law of the land."
+                    <br><em>宪法是国家的最高法律。</em>
+                </div>
+                <div class="sentence" onclick="speakSentence(this)">
+                    <strong>Pattern 4:</strong> "Courts are bound by the Constitution, not by ordinary legislative acts."
+                    <br><em>法院受宪法约束，而不受普通立法行为的约束。</em>
+                </div>
+                <div class="sentence" onclick="speakSentence(this)">
+                    <strong>Pattern 5:</strong> "The judicial power extends to all cases arising under the Constitution."
+                    <br><em>司法权涵盖所有根据宪法产生的案件。</em>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quiz Modal -->
+    <div class="quiz-modal" id="quizModal">
+        <div class="quiz-content">
+            <button class="close-btn" onclick="closeQuiz()">×</button>
+            <h3>知识测验</h3>
+            <div id="quizContainer">
+                <div class="quiz-question" id="quizQuestion"></div>
+                <div class="quiz-options" id="quizOptions"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Original functions
+        function switchTab(event, tabId) {
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(content => {
+                content.classList.remove('active');
+            });
+
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            document.getElementById(tabId).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // New Interactive Functions
+        let currentQuizQuestion = 0;
+        let quizScore = 0;
+        let isDarkMode = false;
+
+        const quizQuestions = [
+            {
+                question: "What principle was established in Marbury v. Madison?",
+                options: ["Judicial Review", "Separation of Powers", "Federalism", "Due Process"],
+                correct: 0
+            },
+            {
+                question: "Who was the Chief Justice that wrote the majority opinion?",
+                options: ["John Adams", "John Marshall", "James Madison", "Thomas Jefferson"],
+                correct: 1
+            },
+            {
+                question: "What type of writ did Marbury seek?",
+                options: ["Habeas Corpus", "Certiorari", "Mandamus", "Prohibition"],
+                correct: 2
+            },
+            {
+                question: "Which act was declared unconstitutional?",
+                options: ["Constitution Act", "Judiciary Act of 1789", "Commerce Act", "Appointment Act"],
+                correct: 1
+            },
+            {
+                question: "What is the significance of this case?",
+                options: ["Established presidential power", "Created the Bill of Rights", "Established judicial review", "Ended slavery"],
+                correct: 2
+            }
+        ];
+
+        // Progress bar
+        window.addEventListener('scroll', () => {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById('progressBar').style.width = scrolled + '%';
+        });
+
+        // Floating navigation
+        function scrollToSection(index) {
+            const sections = document.querySelectorAll('.section');
+            if (sections[index]) {
+                sections[index].scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // Dark mode toggle
+        document.getElementById('darkModeToggle').addEventListener('click', () => {
+            isDarkMode = !isDarkMode;
+            document.body.classList.toggle('dark-mode');
+            document.getElementById('darkModeToggle').textContent = isDarkMode ? '☀️' : '🌙';
+        });
+
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const content = document.body.innerHTML;
+            
+            // Remove previous highlights
+            document.body.innerHTML = content.replace(/<span class="highlight-search">(.*?)<\/span>/g, '$1');
+            
+            if (searchTerm.length > 2) {
+                const regex = new RegExp(`(${searchTerm})`, 'gi');
+                const newContent = document.body.innerHTML.replace(regex, '<span class="highlight-search">$1</span>');
+                document.body.innerHTML = newContent;
+            }
+        });
+
+        // Quiz functionality
+        function openQuiz() {
+            currentQuizQuestion = 0;
+            quizScore = 0;
+            document.getElementById('quizModal').style.display = 'flex';
+            showQuizQuestion();
+        }
+
+        function closeQuiz() {
+            document.getElementById('quizModal').style.display = 'none';
+        }
+
+        function showQuizQuestion() {
+            if (currentQuizQuestion >= quizQuestions.length) {
+                showQuizResults();
+                return;
+            }
+
+            const question = quizQuestions[currentQuizQuestion];
+            document.getElementById('quizQuestion').textContent = `Question ${currentQuizQuestion + 1}: ${question.question}`;
+            
+            const optionsContainer = document.getElementById('quizOptions');
+            optionsContainer.innerHTML = '';
+            
+            question.options.forEach((option, index) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'quiz-option';
+                optionDiv.textContent = option;
+                optionDiv.onclick = () => checkAnswer(index);
+                optionsContainer.appendChild(optionDiv);
+            });
+        }
+
+        function checkAnswer(selectedIndex) {
+            const question = quizQuestions[currentQuizQuestion];
+            const options = document.querySelectorAll('.quiz-option');
+            
+            if (selectedIndex === question.correct) {
+                options[selectedIndex].classList.add('correct');
+                quizScore++;
+            } else {
+                options[selectedIndex].classList.add('incorrect');
+                options[question.correct].classList.add('correct');
+            }
+            
+            setTimeout(() => {
+                currentQuizQuestion++;
+                showQuizQuestion();
+            }, 1500);
+        }
+
+        function showQuizResults() {
+            const container = document.getElementById('quizContainer');
+            const percentage = Math.round((quizScore / quizQuestions.length) * 100);
+            let message = '';
+            
+            if (percentage >= 80) {
+                message = 'Excellent! You have a great understanding of the case!';
+            } else if (percentage >= 60) {
+                message = 'Good job! Keep studying to improve your knowledge.';
+            } else {
+                message = 'Keep learning! Review the materials and try again.';
+            }
+            
+            container.innerHTML = `
+                <h3>Quiz Complete!</h3>
+                <p style="font-size: 1.5rem; margin: 20px 0;">Your Score: ${quizScore}/${quizQuestions.length} (${percentage}%)</p>
+                <p style="margin-bottom: 20px;">${message}</p>
+                <button onclick="openQuiz()" style="padding: 10px 20px; background: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer;">Try Again</button>
+            `;
+        }
+
+        // Vocabulary detail modal
+        function showVocabDetail(termId) {
+            const vocabDetails = {
+                'judicial-review': {
+                    term: 'Judicial Review',
+                    definition: 'The power of courts to examine laws and government actions for constitutionality. This principle allows courts to invalidate laws that violate the Constitution.',
+                    example: 'The Supreme Court exercised judicial review in Marbury v. Madison to strike down part of the Judiciary Act.'
+                },
+                'mandamus': {
+                    term: 'Mandamus',
+                    definition: 'A court order compelling a government official to perform an act that the law requires as a duty.',
+                    example: 'Marbury sought a writ of mandamus to compel Madison to deliver his commission.'
+                }
+            };
+            
+            if (vocabDetails[termId]) {
+                const detail = vocabDetails[termId];
+                alert(`${detail.term}\n\n${detail.definition}\n\nExample: ${detail.example}`);
+            }
+        }
+
+        function showPhraseDetail(phraseId) {
+            const phraseDetails = {
+                'rule-law': {
+                    phrase: 'Rule of Law',
+                    explanation: 'The principle that all people and institutions are subject to and accountable to law that is fairly applied and enforced.'
+                }
+            };
+            
+            if (phraseDetails[phraseId]) {
+                const detail = phraseDetails[phraseId];
+                alert(`${detail.phrase}\n\n${detail.explanation}`);
+            }
+        }
+
+        // Text-to-speech functionality
+        function speakSentence(element) {
+            if ('speechSynthesis' in window) {
+                const text = element.textContent.split('[')[0]; // Get English part
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'en-US';
+                utterance.rate = 0.8;
+                speechSynthesis.speak(utterance);
+            }
+        }
+
+        // Interactive elements click effects
+        document.querySelectorAll('.interactive-element').forEach(element => {
+            element.addEventListener('click', function() {
+                const concepts = [
+                    'Judicial review is the power of courts to determine the constitutionality of laws!',
+                    'This case established the judiciary as an equal branch of government!',
+                    'The Constitution is the supreme law of the land!',
+                    'Separation of powers prevents any one branch from becoming too powerful!'
+                ];
+                const randomConcept = concepts[Math.floor(Math.random() * concepts.length)];
+                alert(randomConcept);
+            });
+        });
+
+        // Add hover sound effects (visual feedback)
+        document.querySelectorAll('.vocab-card, .sentence, .process-step').forEach(element => {
+            element.addEventListener('mouseenter', function() {
+                this.style.transform = 'scale(1.02)';
+            });
+            
+            element.addEventListener('mouseleave', function() {
+                this.style.transform = 'scale(1)';
+            });
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeQuiz();
+            }
+        });
+
+        // Initialize floating nav active state
+        window.addEventListener('scroll', () => {
+            const sections = document.querySelectorAll('.section');
+            const navItems = document.querySelectorAll('.nav-item');
+            
+            sections.forEach((section, index) => {
+                const rect = section.getBoundingClientRect();
+                if (rect.top <= 100 && rect.bottom >= 100) {
+                    navItems.forEach(item => item.classList.remove('active'));
+                    if (navItems[index]) {
+                        navItems[index].classList.add('active');
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
