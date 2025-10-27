@@ -1,0 +1,759 @@
+<!doctype html>
+<html lang="zh-CN" data-bs-spy="scroll" data-bs-target="#toc" data-bs-offset="120" tabindex="0">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>设计者：解雅森 — 交互式双语学习 · Lochner v. New York (1905)</title>
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Noto+Serif+SC:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg: #FFFDF9; --surface: #FFFFFF; --text: #2A2A2A; --muted: #6B6B6B; --accent: #C89B6C; --accent-contrast: #fff; --card-shadow: 0 6px 20px rgba(20,18,16,.06);
+    }
+    [data-theme="dark"]{ --bg:#1C1B19; --surface:#262422; --text:#EAE2D6; --muted:#BFB3A3; --accent:#C89B6C; --accent-contrast:#1C1B19; --card-shadow:0 6px 20px rgba(0,0,0,.6); }
+    html,body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue","Noto Serif SC","Noto Serif",sans-serif;}
+    a{color:var(--accent)} a:hover{text-decoration:underline}
+    .surface{background:var(--surface);box-shadow:var(--card-shadow);border-radius:12px}
+    .site-title{font-weight:700;letter-spacing:-.02em}
+    .site-sub{color:var(--muted)}
+    .btn-accent{background:var(--accent);color:var(--accent-contrast);border:none}
+    .btn-accent-outline{color:var(--accent);border-color:rgba(0,0,0,.06);background:transparent}
+    #sideNav{top:110px}
+    #backTop{position:fixed;right:20px;bottom:20px;z-index:999;display:none;border-radius:50%;width:48px;height:48px;box-shadow:0 6px 18px rgba(0,0,0,.12)}
+    mark.highlight{background:rgba(200,155,108,.18);border-radius:4px;padding:0 2px}
+    .bilingual-split{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+    .bilingual-split .col-left{overflow-wrap:anywhere}
+    .bilingual-split .col-right{opacity:.95}
+    .glossary-term{cursor:pointer;color:var(--accent);font-weight:600}
+    .trans{transition:all .18s ease}
+    .lang-en .cn, .lang-en .bi{display:none}
+    .lang-zh .en, .lang-zh .bi{display:none}
+    .lang-bi .en, .lang-bi .cn{display:none}
+    @media(max-width:991px){#sideNav{position:static;transform:none}.bilingual-split{grid-template-columns:1fr}}
+  </style>
+  <style>
+  /* v3 overrides: dark mode, language visibility, cards */
+  .lang-en .cn{display:none}
+  .lang-zh .en{display:none}
+  .lang-bi .en,.lang-bi .cn{display:block}
+
+  :root{
+    --bg:#FFFDF9; --surface:#FFFFFF; --text:#2A2A2A; --muted:#6B6B6B;
+    --accent:#C89B6C; --accent-contrast:#fff; --card-shadow:0 6px 20px rgba(20,18,16,.06);
+    --card-bg: var(--surface); --card-text: var(--text);
+  }
+  [data-theme="dark"]{
+    --bg:#1C1B19; --surface:#262420; --text:#EAE2D6; --muted:#BFB3A3; --accent:#C89B6C;
+    --accent-contrast:#1C1B19; --card-shadow:0 6px 20px rgba(0,0,0,.6);
+    --card-bg:#2B2925; --card-text:#EAE2D6;
+  }
+  .surface{ background:var(--surface); color:var(--text); }
+  .design-card{ background:var(--card-bg); color:var(--card-text); box-shadow:var(--card-shadow); border-radius:12px }
+  [data-theme="dark"] .accordion-button{ background-color:#2B2925; color:var(--text) }
+  [data-theme="dark"] .accordion-body{ background-color:#262420; color:var(--text) }
+  [data-theme="dark"] .list-group-item, [data-theme="dark"] .table{ background-color:#262420; color:var(--text) }
+  </style>
+</head>
+<body class="lang-bi">
+  <!-- 顶部栏 -->
+  <nav class="navbar navbar-expand-lg surface p-3 shadow-sm sticky-top">
+    <div class="container-fluid">
+      <div class="d-flex align-items-center">
+        <div class="me-3">
+          <h1 class="h4 site-title mb-0">设计者：解雅森</h1>
+          <div class="site-sub small">Lochner v. New York (1905) — Interactive & Bilingual Learning</div>
+        </div>
+      </div>
+      <div class="d-flex ms-auto gap-2 align-items-center">
+        <!-- 语言显示模式 -->
+        <div class="btn-group" role="group" aria-label="Display mode">
+          <button id="modeEnglish" class="btn btn-sm btn-outline-secondary" aria-pressed="false" title="English only">English</button>
+          <button id="modeBilingual" class="btn btn-sm btn-outline-secondary active" aria-pressed="true" title="Bilingual">双语</button>
+          <button id="modeChinese" class="btn btn-sm btn-outline-secondary" aria-pressed="false" title="中文模式">中文</button>
+        </div>
+        <!-- 主题切换 -->
+        <button id="themeToggle" class="btn btn-sm btn-accent trans" title="切换主题"><i id="themeIcon" class="fa-solid fa-moon"></i></button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container-fluid mt-4">
+    <div class="row">
+      <!-- 侧边目录 -->
+      <nav id="sideNav" class="col-lg-3 d-none d-lg-block">
+        <div class="surface p-3 position-sticky" style="top:110px;">
+          <h5 class="mb-3">目录导航</h5>
+          <nav class="nav flex-column" id="toc">
+            <a class="nav-link" href="#design">1. 设计工具、方法、过程（中文）</a>
+            <a class="nav-link" href="#elements">2. Elements of a Judicial Opinion (English)</a>
+            <a class="nav-link" href="#glossary">3. 双语知识库</a>
+            <a class="nav-link" href="#excerpts">4. 典型句型与案例摘录（双语）</a>
+            <a class="nav-link" href="#extras">5. 交互工具（朗读、检索、导出）</a>
+            <a class="nav-link" href="#practice">6. 测验与抽认卡</a>
+            <a class="nav-link" href="#sources">7. 参考与致谢</a>
+          </nav>
+        </div>
+      </nav>
+
+      <!-- 主体 -->
+      <main class="col-lg-9">
+        <!-- 1. 设计（中文） -->
+        <section id="design" class="mb-5">
+  <h2 class="h4">1. 设计工具、方法、过程（中文）</h2>
+  <div class="row g-3 mt-3">
+    <div class="col-md-4">
+      <div class="design-card p-3 h-100">
+        <h6 class="mb-2">工具</h6>
+        <ul class="mb-0">
+          <li>Bootstrap 5：响应式布局与组件</li>
+          <li>Google Fonts：Inter / 思源宋体</li>
+          <li>Font Awesome：图标系统</li>
+          <li>原生 JavaScript：交互逻辑与 Web Speech</li>
+        </ul>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="design-card p-3 h-100">
+        <h6 class="mb-2">方法</h6>
+        <ol class="mb-0">
+          <li>三层信息架构：设计说明 / 意见书要素 / 双语知识库；可拓展测验与抽认卡。</li>
+          <li>先可读性与移动端适配，其后增强交互（术语高亮、检索、导出）。</li>
+          <li>主题与语言持久化（localStorage）保障回访体验。</li>
+        </ol>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="design-card p-3 h-100">
+        <h6 class="mb-2">过程</h6>
+        <p class="mb-0">自下而上：先语义 HTML→再排版与配色→最后交互。尽量用浏览器原生能力，避免依赖冗余库。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+        <!-- 2. Elements (English) -->
+        <section id="elements" class="mb-5 surface p-4">
+  <h2 class="h4">2. Elements of a Judicial Opinion (English)</h2>
+  <p class="text-muted small">Expanded checklist with Lochner examples.</p>
+  <div class="accordion" id="elementsAccord">
+    <div class="accordion-item"><h2 class="accordion-header"><button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#caseCaption">1. Case Caption</button></h2>
+      <div id="caseCaption" class="accordion-collapse collapse" data-bs-parent="#elementsAccord"><div class="accordion-body">
+        <p><strong>Definition:</strong> Case style identifying parties & court.</p>
+        <p><strong>Example:</strong> <em>Joseph Lochner v. People of the State of New York</em>.</p>
+      </div></div>
+    </div>
+    <div class="accordion-item"><h2 class="accordion-header"><button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#procedural">2. Procedural History</button></h2>
+      <div id="procedural" class="accordion-collapse collapse" data-bs-parent="#elementsAccord"><div class="accordion-body">
+        <p>From conviction under the Bakeshop Act to review on writ of error before the U.S. Supreme Court.</p>
+      </div></div>
+    </div>
+    <div class="accordion-item"><h2 class="accordion-header"><button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#facts">3. Facts</button></h2>
+      <div id="facts" class="accordion-collapse collapse" data-bs-parent="#elementsAccord"><div class="accordion-body">
+        <p>New York limited bakers to 10 hours/day, 60 hours/week; Lochner allowed overtime and was convicted.</p>
+      </div></div>
+    </div>
+    <div class="accordion-item"><h2 class="accordion-header"><button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#issue">4. Issue</button></h2>
+      <div id="issue" class="accordion-collapse collapse" data-bs-parent="#elementsAccord"><div class="accordion-body">
+        <p>Whether the hours cap violated liberty protected by the Fourteenth Amendment—specifically freedom of contract.</p>
+      </div></div>
+    </div>
+    <div class="accordion-item"><h2 class="accordion-header"><button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#holding">5. Holding</button></h2>
+      <div id="holding" class="accordion-collapse collapse" data-bs-parent="#elementsAccord"><div class="accordion-body">
+        <p>The statute was an unreasonable, unnecessary, and arbitrary interference—thus void under the Fourteenth Amendment.</p>
+      </div></div>
+    </div>
+    <div class="accordion-item"><h2 class="accordion-header"><button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#reasoning">6. Reasoning</button></h2>
+      <div id="reasoning" class="accordion-collapse collapse" data-bs-parent="#elementsAccord"><div class="accordion-body">
+        <p>Baking not shown to be so injurious as to justify hours limits; police power did not reach that far on this record.</p>
+      </div></div>
+    </div>
+    <div class="accordion-item"><h2 class="accordion-header"><button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#dicta">7. Dicta</button></h2>
+      <div id="dicta" class="accordion-collapse collapse" data-bs-parent="#elementsAccord"><div class="accordion-body">
+        <p>General observations about limits of state regulatory power and individual liberty beyond the strict holding.</p>
+      </div></div>
+    </div>
+    <div class="accordion-item"><h2 class="accordion-header"><button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#conclusion">8. Conclusion</button></h2>
+      <div id="conclusion" class="accordion-collapse collapse" data-bs-parent="#elementsAccord"><div class="accordion-body">
+        <p>Judgment reversed; hours cap invalid.</p>
+      </div></div>
+    </div>
+    <div class="accordion-item"><h2 class="accordion-header"><button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#rule">9. Rule of Law</button></h2>
+      <div id="rule" class="accordion-collapse collapse" data-bs-parent="#elementsAccord"><div class="accordion-body">
+        <p>Freedom of contract is a protected liberty interest; valid exercises of state police power may limit it.</p>
+      </div></div>
+    </div>
+    <div class="accordion-item"><h2 class="accordion-header"><button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#standard">10. Standard of Review</button></h2>
+      <div id="standard" class="accordion-collapse collapse" data-bs-parent="#elementsAccord"><div class="accordion-body">
+        <p>Rational basis–like scrutiny applied to assess whether the law reasonably relates to health/safety/welfare.</p>
+      </div></div>
+    </div>
+    <div class="accordion-item"><h2 class="accordion-header"><button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#majority">11. Majority Opinion</button></h2>
+      <div id="majority" class="accordion-collapse collapse" data-bs-parent="#elementsAccord"><div class="accordion-body">
+        <p>Opinion by Justice Peckham: the statute overreached; baking not sufficiently dangerous to justify the limit.</p>
+      </div></div>
+    </div>
+    <div class="accordion-item"><h2 class="accordion-header"><button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#dissent">12. Dissent / Concurrence</button></h2>
+      <div id="dissent" class="accordion-collapse collapse" data-bs-parent="#elementsAccord"><div class="accordion-body">
+        <p><em>Harlan, J.</em> would defer to legislative judgment on health; <em>Holmes, J.</em> cautioned that “The Fourteenth Amendment does not enact Mr. Herbert Spencer’s Social Statics.”</p>
+      </div></div>
+    </div>
+    <div class="accordion-item"><h2 class="accordion-header"><button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#significance">13. Significance</button></h2>
+      <div id="significance" class="accordion-collapse collapse" data-bs-parent="#elementsAccord"><div class="accordion-body">
+        <p>Iconic of the “liberty of contract” era; later curtailed by <em>West Coast Hotel v. Parrish</em> (1937).</p>
+      </div></div>
+    </div>
+  </div>
+  <div class="mt-3">
+    <span class="badge text-bg-light">+ Rule of Law</span>
+    <span class="badge text-bg-light">+ Standard of Review</span>
+    <span class="badge text-bg-light">+ Majority / Dissent</span>
+    <span class="badge text-bg-light">+ Significance</span>
+  </div>
+</section>
+
+        <!-- 3. 双语知识库 -->
+        <section id="glossary" class="mb-5 surface p-4">
+          <h2 class="h4">3. 双语知识库（术语 20 ／短语 10 ／句型 5）</h2>
+          <div class="row g-2 align-items-center mb-2">
+            <div class="col-md-8"><input id="termSearch" class="form-control" placeholder="搜索术语或中文释义…"></div>
+            <div class="col-md-4 text-md-end">
+              <button id="exportJson" class="btn btn-sm btn-outline-secondary"><i class="fa-solid fa-download"></i> 导出JSON</button>
+              <button id="exportCsv" class="btn btn-sm btn-outline-secondary"><i class="fa-solid fa-file-csv"></i> 导出CSV</button>
+            </div>
+          </div>
+
+          <div class="table-responsive surface p-3 mb-3">
+            <table class="table table-borderless mb-0" id="glossaryTable" aria-describedby="术语表">
+              <thead><tr>
+                <th style="width:22%">Term</th>
+                <th style="width:38%">English (def.)</th>
+                <th style="width:30%">中文（标准译法）</th>
+                <th style="width:10%">Lvl</th>
+              </tr></thead>
+              <tbody id="glossaryBody"></tbody>
+            </table>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <h6>常用短语（10）</h6>
+              <ul id="phraseList" class="mb-0"></ul>
+            </div>
+            <div class="col-md-6">
+              <h6>典型句型（5）</h6>
+              <ol id="patternList" class="mb-0"></ol>
+            </div>
+          </div>
+        </section>
+
+        <!-- 4. 典型句型与案例摘录（双语） -->
+        <section id="excerpts" class="mb-5 surface p-4">
+          <h2 class="h4">4. 典型句型与案例摘录（双语）</h2>
+          <div class="bilingual-split">
+            <div class="col-left">
+              <p class="en"><em>“The general right to make a contract ... is part of the liberty of the individual protected by the Fourteenth Amendment.”</em></p>
+              <p class="cn">“人们在其业务中订立契约的一般权利，是第十四修正案所保护的个人自由的一部分。”</p>
+              <hr>
+              <p class="en"><em>“It is a question of which of two powers or rights shall prevail — the power of the State to legislate or the right of the individual to liberty of person and freedom of contract.”</em></p>
+              <p class="cn">“问题在于两种权力/权利孰优：是州之立法权，抑或个人的人身自由与契约自由。”</p>
+              <hr>
+              <p class="en"><em>“There is a limit to the valid exercise of the police power by the State.”</em></p>
+              <p class="cn">“州对警察权的有效行使自有其界限。”</p>
+            </div>
+            <div class="col-right">
+              <p class="en"><em>“Statutes ... limiting the hours in which grown and intelligent men may labor ... are mere meddlesome interferences with the rights of the individual.”</em></p>
+              <p class="cn">“限制成年且具判断能力之人劳动时长的法律，纯属对个人权利的多管闲事式干涉。”</p>
+              <hr>
+              <p class="en"><em>“A legislative enactment ... is never to be disregarded or held invalid unless it be, beyond question, plainly and palpably in excess of legislative power.”</em> (Harlan, J., dissenting)</p>
+              <p class="cn">“除非毫无疑问地明显且清楚地逾越立法权界限，立法不得被忽视或认定无效。”（哈伦大法官异议）</p>
+            </div>
+          </div>
+          <div class="small text-muted mt-2">以上英句均据原文摘录，中文为学习性对译；用于术语与句型训练。</div>
+        </section>
+
+        <!-- 5. 交互工具 -->
+        <section id="extras" class="mb-5 surface p-4">
+          <h2 class="h4">5. 交互工具（朗读、检索、导出）</h2>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <div class="p-3">
+                <h6>朗读示例</h6>
+                <div class="input-group">
+                  <select id="voiceLang" class="form-select" style="max-width:160px;">
+                    <option value="en-US" selected>English</option>
+                    <option value="zh-CN">中文</option>
+                  </select>
+                  <button id="speakSelection" class="btn btn-accent">朗读所选文本</button>
+                </div>
+                <textarea id="speakText" class="form-control mt-2" rows="3">The general right to make a contract in relation to his business is part of the liberty of the individual protected by the Fourteenth Amendment.</textarea>
+                <div class="mt-2 d-flex gap-2">
+                  <button id="speakBtn" class="btn btn-sm btn-outline-secondary"><i class="fa-solid fa-volume-high"></i> 朗读示例</button>
+                  <button id="stopSpeak" class="btn btn-sm btn-outline-secondary">停止</button>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="p-3">
+                <h6>术语检索 / 释义</h6>
+                <div class="d-flex gap-2">
+                  <input id="aiQuery" class="form-control" placeholder="输入术语或句子（如：freedom of contract）">
+                  <button id="aiQueryBtn" class="btn btn-outline-secondary">本地检索</button>
+                </div>
+                <div id="aiResult" class="mt-2 small text-muted">示例：freedom of contract — 契约自由；（进阶）个人缔约权受第十四修正案保护。</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 6. 测验与抽认卡 -->
+        <section id="practice" class="mb-5 surface p-4">
+          <h2 class="h4">6. 测验与抽认卡</h2>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <div class="p-3">
+                <h6>术语抽认卡</h6>
+                <div id="flashcard" class="border rounded-3 p-4 text-center">
+                  <div id="flashTerm" class="h5 mb-2"></div>
+                  <div id="flashHint" class="text-muted mb-3">点击显示释义</div>
+                  <div id="flashDef" class="mb-3" style="display:none"></div>
+                  <div class="d-flex justify-content-center gap-2">
+                    <button id="knowBtn" class="btn btn-sm btn-outline-success">我会</button>
+                    <button id="dontKnowBtn" class="btn btn-sm btn-outline-danger">不会</button>
+                    <button id="nextBtn" class="btn btn-sm btn-outline-secondary">下一张</button>
+                  </div>
+                </div>
+                <div class="small text-muted mt-2">系统会优先抽取你“不熟悉”的卡片，形成轻度间隔重复。</div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="p-3">
+                <h6>5 题小测（自动生成）</h6>
+                <div id="quiz"></div>
+                <button id="genQuiz" class="btn btn-sm btn-outline-secondary mt-2">重新生成</button>
+                <button id="checkQuiz" class="btn btn-sm btn-accent mt-2">提交判分</button>
+                <div id="quizResult" class="mt-2"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 7. 参考与致谢 -->
+        <section id="sources" class="mb-5 surface p-4">
+          <h2 class="h4">7. 参考与致谢</h2>
+          <ul class="small text-muted">
+            <li>Supreme Court reports for <em>Lochner v. New York</em> (1905) — public domain.</li>
+            <li>页面实现与内容结构由“设计者：解雅森”创作；本页用于教学与练习。</li>
+          </ul>
+        </section>
+
+        <div id="testStatus" class="small text-center text-muted my-3"></div>
+        <footer class="mt-2 mb-5 small text-muted">© 设计者：解雅森 · 可扩展接入翻译/释义 API · 本页支持离线学习。</footer>
+      </main>
+    </div>
+  </div>
+
+  <!-- 回到顶部 -->
+  <button id="backTop" class="btn btn-accent" aria-label="Back to top" title="返回顶部"><i class="fa-solid fa-arrow-up"></i></button>
+
+  <!-- 术语详情 Modal -->
+  <div class="modal fade" id="termModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content surface p-3">
+        <div class="modal-header border-0">
+          <h5 id="termModalTitle" class="modal-title"></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p id="termModalDef" class="mb-2"></p>
+          <p id="termModalCn" class="mb-2 text-muted"></p>
+          <div class="d-flex gap-2 align-items-center">
+            <button id="modalSpeakEn" class="btn btn-sm btn-outline-secondary"><i class="fa-solid fa-volume-high"></i> 朗读英</button>
+            <button id="modalSpeakCn" class="btn btn-sm btn-outline-secondary"><i class="fa-solid fa-volume-high"></i> 朗读中</button>
+            <button id="modalHighlight" class="btn btn-sm btn-accent ms-auto">在文中高亮</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // ========= Utilities =========
+    const $ = s => document.querySelector(s);
+    const $$ = s => Array.from(document.querySelectorAll(s));
+    const escapeHtml = (str='') => str.replace(/[&<>"']/g, m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m]));
+    const escapeRegExp = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+    // ========= Theme & Language persistence =========
+    const root = document.documentElement;
+    const savedTheme = localStorage.getItem('theme');
+    if(savedTheme==='dark') root.setAttribute('data-theme','dark');
+    const savedLang = localStorage.getItem('lang');
+    if(savedLang) document.body.className = savedLang;
+
+    $('#themeToggle').addEventListener('click',()=>{
+      const isDark = root.getAttribute('data-theme')==='dark';
+      root.setAttribute('data-theme', isDark? '' : 'dark');
+      $('#themeIcon').className = isDark? 'fa-solid fa-moon' : 'fa-solid fa-sun';
+      localStorage.setItem('theme', isDark? '' : 'dark');
+    });
+    $('#modeEnglish').addEventListener('click',()=>{document.body.className='lang-en';localStorage.setItem('lang','lang-en')});
+    $('#modeBilingual').addEventListener('click',()=>{document.body.className='lang-bi';localStorage.setItem('lang','lang-bi')});
+    $('#modeChinese').addEventListener('click',()=>{document.body.className='lang-zh';localStorage.setItem('lang','lang-zh')});
+
+    // ========= Back to top =========
+    const backTop = $('#backTop');
+    window.addEventListener('scroll',()=>{backTop.style.display = window.scrollY>300? 'block':'none';});
+    backTop.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+
+    // ========= Glossary Data (20 terms) =========
+    const GLOSSARY = [
+      {term:'freedom of contract', en:'Right of individuals to freely enter into contracts.', cn:'契约自由', lvl:'进阶', note:'重点'},
+      {term:'Fourteenth Amendment', en:'Amendment guaranteeing Due Process and Equal Protection.', cn:'第十四修正案', lvl:'基础'},
+      {term:'police power', en:'State authority to regulate for health, safety, morals, and welfare.', cn:'警察权（州在公共健康、安全、道德与福利方面的规制权）', lvl:'进阶'},
+      {term:'liberty of person', en:'Personal liberty protected by the Constitution.', cn:'人身自由', lvl:'基础'},
+      {term:'due process of law', en:'Procedural and substantive protections against arbitrary deprivation of life, liberty, or property.', cn:'正当程序', lvl:'基础'},
+      {term:'arbitrary interference', en:'Unreasonable intrusion on protected rights.', cn:'任意干涉', lvl:'进阶'},
+      {term:'contract of employment', en:'Agreement between employer and employee.', cn:'雇佣合同', lvl:'基础'},
+      {term:'holding', en:"The court’s legal determination pivotal to the case.", cn:'裁判要旨 / 判决要点', lvl:'进阶'},
+      {term:'dicta', en:'Statements not necessary to the decision.', cn:'附带意见（非判决必要）', lvl:'进阶'},
+      {term:'writ of error', en:'Appellate device to review a lower court’s judgment.', cn:'复审令状（writ of error）', lvl:'进阶'},
+      {term:'Bakeshop Act', en:'Statute limiting bakery working hours.', cn:'（纽约）面包店法案', lvl:'基础'},
+      {term:'infringe', en:'To encroach upon or violate.', cn:'侵犯 / 侵害', lvl:'基础'},
+      {term:'public welfare', en:'General well‑being of the public.', cn:'公共福祉', lvl:'基础'},
+      {term:'occupational regulation', en:'Laws regulating professions or trades.', cn:'职业监管 / 职业规制', lvl:'进阶'},
+      {term:'health law', en:'Laws addressing public health.', cn:'公共卫生法', lvl:'基础'},
+      {term:'arbitrary interference with the right', en:'Unwarranted intrusion into a protected right.', cn:'对权利的任意干涉', lvl:'重点', note:'重点'},
+      {term:'sui juris', en:'Having full legal capacity or competence.', cn:'具有完全行为能力者', lvl:'进阶'},
+      {term:'legitimate exercise', en:'Proper, lawful exercise of power.', cn:'正当行使 / 合法行使', lvl:'基础'},
+      {term:'exceed the police power', en:'Go beyond permissible public‑welfare regulation.', cn:'超出警察权的界限', lvl:'进阶'},
+      {term:'freedom of contract doctrine', en:'Doctrine emphasizing contractual liberty against regulation.', cn:'契约自由原则', lvl:'重点', note:'重点'}
+    ];
+
+    // ========= Phrases (10) & Patterns (5) =========
+    const PHRASES = [
+      ['be part of','成为…的一部分'],
+      ['in relation to','与…有关'],
+      ['be required or permitted to','被要求或被允许…'],
+      ['exceed the police power','超出警察权范畴'],
+      ['arbitrary interference','任意干涉'],
+      ['liberty of person','人身自由'],
+      ['liberty of contract','契约自由'],
+      ['within the police power','属于警察权范围'],
+      ['subject to regulation','可受规制'],
+      ['void under the Fourteenth Amendment','因违反第十四修正案而无效']
+    ];
+    const PATTERNS = [
+      ['It is a question of which of two powers or rights shall prevail.','问题在于哪一种权力或权利应当占优。'],
+      ['The general right to make a contract … is part of the liberty of the individual protected by the Fourteenth Amendment.','订立契约的一般权利属于第十四修正案所保护的个人自由的一部分。'],
+      ['There is a limit to the valid exercise of the police power by the State.','州对警察权的有效行使自有其界限。'],
+      ['Statutes … limiting the hours … are mere meddlesome interferences with the rights of the individual.','限制劳动时长的法规纯属对个人权利的多管闲事式干涉。'],
+      ['A legislative enactment … is never to be disregarded unless plainly and palpably in excess of legislative power.','除非明显且清楚地逾越立法权限，立法不得被忽视或判无效。']
+    ];
+
+    // ========= Render glossary =========
+    const tbody = $('#glossaryBody');
+    function renderGlossary(list = GLOSSARY){
+      tbody.innerHTML = '';
+      list.forEach((g, idx)=>{
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td><span class="glossary-term" data-idx="${idx}">${escapeHtml(g.term)}</span></td>
+                        <td>${escapeHtml(g.en)}</td>
+                        <td>${escapeHtml(g.cn)} ${g.note?'<span class="badge bg-warning text-dark ms-2">重点</span>':''}</td>
+                        <td><span class="small text-muted">${g.lvl}</span></td>`;
+        tbody.appendChild(tr);
+      });
+      attachTooltips();
+    }
+    renderGlossary();
+
+    // search filter
+    $('#termSearch').addEventListener('input', (e)=>{
+      const q = e.target.value.trim().toLowerCase();
+      const filtered = GLOSSARY.filter(g => g.term.toLowerCase().includes(q) || g.en.toLowerCase().includes(q) || g.cn.toLowerCase().includes(q));
+      renderGlossary(filtered);
+    });
+
+    function attachTooltips(){
+      $$('.glossary-term').forEach(el=>{
+        let g=null;
+        if(el.hasAttribute('data-idx')){
+          const idx = Number(el.getAttribute('data-idx'));
+          g = GLOSSARY[idx];
+        }
+        if(!g && el.dataset.term){
+          g = { cn: el.dataset.meaning || '暂无释义' };
+        }
+        const title = g && g.cn ? g.cn : '—';
+        el.setAttribute('title', title);
+        new bootstrap.Tooltip(el, {placement:'top', trigger:'hover'});
+      });
+    }
+
+    // phrase & pattern render
+    const phraseList = $('#phraseList');
+    PHRASES.forEach(([en,cn])=>{
+      const li = document.createElement('li');
+      li.innerHTML = `<span class="glossary-term" data-term="${escapeHtml(en)}" data-meaning="${escapeHtml(cn)}">${escapeHtml(en)}</span> → ${escapeHtml(cn)}`;
+      phraseList.appendChild(li);
+    });
+    const patternList = $('#patternList');
+    PATTERNS.forEach(([en,cn])=>{
+      const li = document.createElement('li');
+      li.innerHTML = `<code>${escapeHtml(en)}</code> → ${escapeHtml(cn)} <button class="btn btn-sm btn-link copy" data-text="${escapeHtml(en)}" title="复制英文">复制</button>`;
+      patternList.appendChild(li);
+    });
+    // 让新加入的短语也有 tooltip
+    attachTooltips();
+
+    // copy buttons
+    document.addEventListener('click', (e)=>{
+      const copyBtn = e.target.closest('.copy');
+      if(copyBtn){ navigator.clipboard.writeText(copyBtn.dataset.text); copyBtn.textContent='已复制'; setTimeout(()=>copyBtn.textContent='复制',1200); }
+    });
+
+    // term click -> modal（仅表格术语弹窗，短语仅提示）
+    const termModal = new bootstrap.Modal('#termModal');
+    document.addEventListener('click',(e)=>{
+      const el = e.target.closest('.glossary-term');
+      if(!el) return;
+      if(!el.hasAttribute('data-idx')) return; // 非术语表格项不弹窗
+      const idx = Number(el.getAttribute('data-idx'));
+      const g = GLOSSARY[idx];
+      if(!g){ return; }
+      $('#termModalTitle').innerText = g.term;
+      $('#termModalDef').innerHTML = '<strong>EN:</strong> ' + g.en;
+      $('#termModalCn').innerHTML = '<strong>中:</strong> ' + g.cn + (g.note? ' <span class="badge bg-warning text-dark ms-1">重点</span>':'' );
+      $('#modalHighlight').dataset.term = g.term;
+      termModal.show();
+    });
+
+    // highlight in-page occurrences
+    function clearHighlights(){ $$('mark.highlight').forEach(m=>{ const t=document.createTextNode(m.textContent); m.parentNode.replaceChild(t,m); }); }
+    function highlightTerm(term){
+      clearHighlights(); if(!term) return;
+      const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
+      const nodes = []; while(walker.nextNode()) nodes.push(walker.currentNode);
+      const re = new RegExp('\\b'+escapeRegExp(term)+'\\b','gi');
+      nodes.forEach(node=>{
+        if(re.test(node.textContent) && node.parentElement && !['SCRIPT','STYLE','TEXTAREA','CODE'].includes(node.parentElement.tagName)){
+          const span = document.createElement('span');
+          span.innerHTML = node.textContent.replace(re, m=>`<mark class="highlight">${m}</mark>`);
+          node.parentNode.replaceChild(span,node);
+        }
+      });
+    }
+    $('#modalHighlight').addEventListener('click',()=>{ const t = $('#modalHighlight').dataset.term; highlightTerm(t); termModal.hide(); });
+
+    // local search/AI demo
+    $('#aiQueryBtn').addEventListener('click',()=>{
+      const q = $('#aiQuery').value.trim().toLowerCase(); if(!q) return;
+      const found = GLOSSARY.find(g=>g.term.toLowerCase()===q) || GLOSSARY.find(g=>g.term.toLowerCase().includes(q)) || null;
+      $('#aiResult').innerHTML = found ? `<strong>${found.term}</strong> — ${found.cn}；${found.en} ${found.note?'<span class="badge bg-warning text-dark ms-1">重点</span>':''}` : '未找到，试试换个关键词。';
+    });
+
+    // exports
+    function download(filename, text){ const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([text],{type:'text/plain'})); a.download=filename; a.click(); }
+    $('#exportJson').addEventListener('click',()=>download('glossary.json', JSON.stringify(GLOSSARY, null, 2)));
+    $('#exportCsv').addEventListener('click',()=>{
+      const rows = [['term','en','cn','lvl']].concat(GLOSSARY.map(g=>[g.term,g.en,g.cn,g.lvl]));
+      const csv = rows.map(r=>r.map(x=>`"${String(x).replace(/"/g,'""')}"`).join(',')).join('\n');
+      download('glossary.csv', csv);
+    });
+
+    // speech
+    function speak(text, lang='en-US'){
+      if(!('speechSynthesis' in window)){ alert('当前浏览器不支持语音合成。'); return; }
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text); u.lang = lang;
+      const voices = window.speechSynthesis.getVoices(); const v = voices.find(v=>v.lang.toLowerCase().startsWith(lang.split('-')[0])); if(v) u.voice=v;
+      window.speechSynthesis.speak(u);
+    }
+    $('#speakBtn').addEventListener('click',()=>{ const txt=$('#speakText').value.trim(); const lang=$('#voiceLang').value; if(txt) speak(txt, lang); });
+    $('#speakSelection').addEventListener('click',()=>{ const txt = window.getSelection().toString().trim(); const lang=$('#voiceLang').value; if(txt) speak(txt, lang); });
+    $('#stopSpeak').addEventListener('click',()=>window.speechSynthesis.cancel());
+    $('#modalSpeakEn').addEventListener('click',()=>{ const en=$('#termModalDef').innerText.replace('EN: ',''); speak(en,'en-US'); });
+    $('#modalSpeakCn').addEventListener('click',()=>{ const cn=$('#termModalCn').innerText.replace('中: ',''); speak(cn,'zh-CN'); });
+
+    // flashcards (lightweight spaced repetition)
+    let deck = GLOSSARY.map((g,i)=>({i,score:0}));
+    let current=null;
+    function nextCard(){
+      // weighted by low score
+      const sorted = deck.sort((a,b)=>a.score-b.score);
+      current = sorted[Math.floor(Math.random()*Math.min(5, sorted.length))];
+      const g = GLOSSARY[current.i];
+      $('#flashTerm').textContent = g.term;
+      $('#flashHint').style.display='block';
+      $('#flashDef').style.display='none';
+      $('#flashDef').textContent = `${g.cn} — ${g.en}`;
+    }
+    $('#flashcard').addEventListener('click',()=>{ $('#flashHint').style.display='none'; $('#flashDef').style.display='block'; });
+    $('#knowBtn').addEventListener('click',()=>{ if(current){ deck.find(d=>d.i===current.i).score++; nextCard(); }});
+    $('#dontKnowBtn').addEventListener('click',()=>{ if(current){ deck.find(d=>d.i===current.i).score=Math.max(0, deck.find(d=>d.i===current.i).score-1); nextCard(); }});
+    $('#nextBtn').addEventListener('click',nextCard);
+    nextCard();
+
+    // quiz generator
+    function genQuiz(){
+      const container = $('#quiz'); container.innerHTML='';
+      const qTerms = [...GLOSSARY].sort(()=>Math.random()-0.5).slice(0,5);
+      qTerms.forEach((g, qi)=>{
+        const options = [...new Set([g.cn, ...[...GLOSSARY].sort(()=>Math.random()-0.5).slice(0,3).map(x=>x.cn)])].slice(0,4).sort(()=>Math.random()-0.5);
+        const card = document.createElement('div'); card.className='border rounded-3 p-3 mb-2';
+        card.innerHTML = `<div class="fw-semibold">Q${qi+1}. “${escapeHtml(g.term)}” 的中文最接近哪一项？</div>
+          ${options.map((cn,idx)=>`<div class="form-check"><input class="form-check-input" type="radio" name="q${qi}" id="q${qi}_${idx}" value="${escapeHtml(cn)}"><label class="form-check-label" for="q${qi}_${idx}">${escapeHtml(cn)}</label></div>`).join('')}
+          <div class="small text-muted mt-1">EN: ${escapeHtml(g.en)}</div>`;
+        container.appendChild(card);
+        card.dataset.answer = g.cn;
+      });
+      $('#quizResult').textContent='';
+    }
+    function checkQuiz(){
+      const cards = $$('#quiz > div.border'); let correct=0;
+      cards.forEach(card=>{ const ans = card.dataset.answer; const chosen = (card.querySelector('input[type=radio]:checked')||{}).value; if(ans===chosen){ correct++; card.classList.add('border-success'); } else { card.classList.add('border-danger'); } });
+      $('#quizResult').textContent = `得分：${correct} / ${cards.length}`;
+    }
+    $('#genQuiz').addEventListener('click',genQuiz);
+    $('#checkQuiz').addEventListener('click',checkQuiz);
+    genQuiz();
+
+    // ========== Dev Self-Tests ========== //
+    function runSelfTests(){
+      const results = [];
+      try{
+        // T1: glossary渲染数与数据一致
+        const rows = $$('#glossaryBody tr').length; if(rows !== GLOSSARY.length) throw new Error(`Glossary rows ${rows} != data ${GLOSSARY.length}`);
+        results.push('T1✔');
+        // T2: 短语tooltip应为自身释义
+        const firstPhrase = document.querySelector('#phraseList .glossary-term');
+        if(!firstPhrase) throw new Error('No phrase rendered');
+        const meaning = firstPhrase.dataset.meaning;
+        // 强制重新绑定后检查title
+        attachTooltips();
+        if(firstPhrase.getAttribute('title') !== meaning) throw new Error('Phrase tooltip not matching meaning');
+        results.push('T2✔');
+        // T3: 语言切换不丢内容（只检查class变化）
+        $('#modeChinese').click(); if(document.body.className !== 'lang-zh') throw new Error('Lang switch to zh failed');
+        $('#modeBilingual').click(); if(document.body.className !== 'lang-bi') throw new Error('Lang switch to bi failed');
+        results.push('T3✔');
+        // T4: 主题切换属性切换
+        const before = root.getAttribute('data-theme')||''; $('#themeToggle').click(); const after = root.getAttribute('data-theme')||''; if(before===after) throw new Error('Theme toggle did not change');
+        results.push('T4✔');
+        // All passed
+        $('#testStatus').textContent = `✅ 自检通过：${results.join(' ')}`;
+      }catch(err){
+        $('#testStatus').textContent = '❌ 自检失败：' + err.message;
+        console.error(err);
+      }
+    }
+    // 运行自检（可注释掉）
+    runSelfTests();
+  </script>
+<style>
+/* ====== Dark Mode Fixes & Enhancements ====== */
+
+/* 统一输入框、表格、按钮等颜色 */
+[data-theme="dark"] input.form-control,
+[data-theme="dark"] textarea.form-control,
+[data-theme="dark"] select.form-select {
+  background-color: #2e2c28;
+  color: var(--text);
+  border-color: #3d3a34;
+}
+
+[data-theme="dark"] .table {
+  background-color: #2e2c28;
+  color: var(--text);
+}
+[data-theme="dark"] .table thead {
+  background-color: #35322e;
+}
+[data-theme="dark"] .table tr:hover {
+  background-color: #3b3834;
+}
+
+[data-theme="dark"] .btn-outline-secondary {
+  color: var(--text);
+  border-color: #555;
+}
+[data-theme="dark"] .btn-outline-secondary:hover {
+  background-color: #3b3834;
+}
+
+/* tooltip 在夜间模式下的颜色 */
+[data-theme="dark"] .tooltip-inner {
+  background-color: #3b3834;
+  color: var(--text);
+}
+
+/* badge 调整 */
+[data-theme="dark"] .badge.bg-warning {
+  color: #1c1b19;
+}
+
+/* scrollbar 优化 */
+[data-theme="dark"] ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
+  background: #4a463f;
+  border-radius: 4px;
+}
+[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+  background: #6c655c;
+}
+
+/* 选中文本颜色 */
+[data-theme="dark"] ::selection {
+  background: #c89b6c66;
+  color: #fff;
+}
+
+/* 卡片与表格统一色调 */
+[data-theme="dark"] .surface,
+[data-theme="dark"] .design-card {
+  background-color: var(--card-bg);
+  color: var(--card-text);
+  box-shadow: var(--card-shadow);
+}
+
+/* accordion 统一修正 */
+[data-theme="dark"] .accordion-button:not(.collapsed) {
+  background-color: #3b3834;
+  color: var(--text);
+  box-shadow: none;
+}
+
+/* 导航栏修正 */
+[data-theme="dark"] .navbar.surface {
+  background-color: #262420 !important;
+  color: var(--text);
+  box-shadow: var(--card-shadow);
+}
+
+/* input placeholder 对比度增强 */
+[data-theme="dark"] ::placeholder {
+  color: #9b9288;
+}
+
+/* 表单按钮 hover 明暗对比增强 */
+[data-theme="dark"] .btn-accent {
+  background-color: #c89b6c;
+  color: #1c1b19;
+}
+[data-theme="dark"] .btn-accent:hover {
+  background-color: #e6b880;
+  color: #1c1b19;
+}
+</style>
+
+</body>
+</html>
