@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brown v. Board of Education - 交互式法庭意见书</title>
+    <style>
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #1a1a1a;
+            --bg-card: #252525;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+            --accent: #00d4ff;
+            --accent-hover: #00a8cc;
+            --border: #333333;
+            --shadow: rgba(0, 212, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* 背景粒子效果 */
+        #particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.3;
+        }
+
+        /* 导航栏 */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, var(--accent), #ff00ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* 主容器 */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 5rem 2rem 2rem;
+        }
+
+        /* 标题样式 */
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 2rem;
+            background: linear-gradient(45deg, var(--accent), #ff00ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { filter: drop-shadow(0 0 20px var(--shadow)); }
+            to { filter: drop-shadow(0 0 30px rgba(0, 212, 255, 0.3)); }
+        }
+
+        .designer {
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+            font-size: 1.1rem;
+        }
+
+        /* 部分样式 */
+        .section {
+            margin-bottom: 4rem;
+            padding: 2rem;
+            background: var(--bg-secondary);
+            border-radius: 15px;
+            border: 1px solid var(--border);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px var(--shadow);
+        }
+
+        .section-title {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 30px;
+            background: var(--accent);
+            border-radius: 2px;
+        }
+
+        /* 设计工具部分 */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .tool-card {
+            background: var(--bg-card);
+            padding: 1.5rem;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        .tool-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-3px);
+        }
+
+        .tool-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        /* 法庭要素部分 */
+        .court-elements {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .element-card {
+            background: var(--bg-card);
+            padding: 1.5rem;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .element-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent), transparent);
+        }
+
+        .element-title {
+            color: var(--accent);
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        /* 双语知识库 */
+        .vocabulary-container {
+            margin-top: 2rem;
+        }
+
+        .vocab-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 0.8rem 1.5rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 25px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn.active {
+            background: var(--accent);
+            color: var(--bg-primary);
+            border-color: var(--accent);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .vocab-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .vocab-table th,
+        .vocab-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .vocab-table th {
+            background: var(--bg-card);
+            color: var(--accent);
+            font-weight: bold;
+        }
+
+        .vocab-table tr:hover {
+            background: rgba(0, 212, 255, 0.05);
+        }
+
+        /* 卡片网格 */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .flip-card {
+            background-color: transparent;
+            height: 150px;
+            perspective: 1000px;
+        }
+
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+
+        .flip-card:hover .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .flip-card-front {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+        }
+
+        .flip-card-back {
+            background: linear-gradient(135deg, var(--accent), #ff00ff);
+            color: white;
+            transform: rotateY(180deg);
+        }
+
+        /* 音频控制 */
+        .audio-control {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--bg-card);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s ease;
+            border: 1px solid var(--border);
+        }
+
+        .audio-control:hover {
+            transform: scale(1.1);
+            border-color: var(--accent);
+        }
+
+        .audio-control.playing {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(0, 212, 255, 0.7); }
+            70% { box-shadow: 0 0 0 20px rgba(0, 212, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 212, 255, 0); }
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            h1 { font-size: 2rem; }
+            .nav-links { display: none; }
+            .container { padding: 4rem 1rem 1rem; }
+            .section { padding: 1.5rem; }
+            .vocab-tabs { justify-content: center; }
+        }
+
+        /* 滚动条样式 */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-hover);
+        }
+    </style>
+</head>
+<body>
+    <!-- 粒子背景 -->
+    <canvas id="particles"></canvas>
+
+    <!-- 导航栏 -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">Brown v. Board</div>
+            <ul class="nav-links">
+                <li><a href="#design">设计过程</a></li>
+                <li><a href="#elements">法庭要素</a></li>
+                <li><a href="#vocabulary">双语知识库</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 主容器 -->
+    <div class="container">
+        <h1>Brown v. Board of Education</h1>
+        <p class="designer">设计者：周晓妍</p>
+
+        <!-- 设计工具、方法、过程 -->
+        <section id="design" class="section">
+            <h2 class="section-title">1. 设计工具、方法、过程</h2>
+            <div class="tools-grid">
+                <div class="tool-card">
+                    <div class="tool-icon">🎨</div>
+                    <h3>设计工具</h3>
+                    <p>使用 Figma 进行原型设计，VS Code 编写代码，Chrome DevTools 进行调试</p>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-icon">📱</div>
+                    <h3>响应式设计</h3>
+                    <p>采用移动优先策略，使用 CSS Grid 和 Flexbox 实现自适应布局</p>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-icon">🎯</div>
+                    <h3>交互设计</h3>
+                    <p>悬停效果、平滑过渡、3D翻转卡片等微交互提升用户体验</p>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-icon">⚡</div>
+                    <h3>性能优化</h3>
+                    <p>使用 CSS 动画替代 JavaScript，优化渲染性能</p>
+                </div>
+            </div>
+            <p style="margin-top: 2rem;">
+                设计过程遵循用户体验设计原则，首先进行需求分析，确定网站目标和用户需求。然后进行信息架构设计，组织内容层次。
+                在视觉设计阶段，采用深色主题配合霓虹渐变色彩，营造现代科技感。开发过程中注重代码的可维护性和可扩展性。
+            </p>
+        </section>
+
+        <!-- 法庭意见书要素 -->
+        <section id="elements" class="section">
+            <h2 class="section-title">2. 法庭意见书要素</h2>
+            <div class="court-elements">
+                <div class="element-card">
+                    <div class="element-title">Case Name & Citation</div>
+                    <p><strong>Brown v. Board of Education of Topeka, Shawnee County, Kan.</strong></p>
+                    <p>347 U.S. 483 (1954)</p>
+                </div>
+                <div class="element-card">
+                    <div class="element-title">Procedural History</div>
+                    <p>Consolidated appeals from US District Courts in Kansas, South Carolina, Virginia, and Delaware</p>
+                </div>
+                <div class="element-card">
+                    <div class="element-title">Facts</div>
+                    <p>Black children denied admission to public schools attended by white children under laws requiring racial segregation</p>
+                </div>
+                <div class="element-card">
+                    <div class="element-title">Legal Issue</div>
+                    <p>Does racial segregation in public schools violate the Equal Protection Clause of the 14th Amendment?</p>
+                </div>
+                <div class="element-card">
+                    <div class="element-title">Holding</div>
+                    <p>Segregation in public education is unconstitutional as it inherently denies equal educational opportunities</p>
+                </div>
+                <div class="element-card">
+                    <div class="element-title">Reasoning</div>
+                    <p>"Separate educational facilities are inherently unequal" - overturned Plessy v. Ferguson's "separate but equal" doctrine</p>
+                </div>
+                <div class="element-card">
+                    <div class="element-title">Key Quote</div>
+                    <p>"Separate educational facilities are inherently unequal"</p>
+                </div>
+                <div class="element-card">
+                    <div class="element-title">Disposition</div>
+                    <p>Cases remanded for further argument on implementation of desegregation decrees</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 双语知识库 -->
+        <section id="vocabulary" class="section">
+            <h2 class="section-title">3. 双语知识库</h2>
+            <div class="vocab-tabs">
+                <button class="tab-btn active" onclick="showTab('terms')">法律术语</button>
+                <button class="tab-btn" onclick="showTab('phrases')">常用短语</button>
+                <button class="tab-btn" onclick="showTab('sentences')">典型句型</button>
+            </div>
+
+            <!-- 法律术语 -->
+            <div id="terms" class="tab-content active">
+                <div class="card-grid">
+                    <div class="flip-card">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <h4>Segregation</h4>
+                            </div>
+                            <div class="flip-card-back">
+                                <p>种族隔离</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flip-card">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <h4>Equal Protection</h4>
+                            </div>
+                            <div class="flip-card-back">
+                                <p>平等保护</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flip-card">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <h4>Amendment</h4>
+                            </div>
+                            <div class="flip-card-back">
+                                <p>修正案</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flip-card">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <h4>Plaintiff</h4>
+                            </div>
+                            <div class="flip-card-back">
+                                <p>原告</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flip-card">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <h4>Defendant</h4>
+                            </div>
+                            <div class="flip-card-back">
+                                <p>被告</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flip-card">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <h4>Constitutional</h4>
+                            </div>
+                            <div class="flip-card-back">
+                                <p>宪法的</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flip-card">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <h4>Discrimination</h4>
+                            </div>
+                            <div class="flip-card-back">
+                                <p>歧视</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flip-card">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <h4>Jurisdiction</h4>
+                            </div>
+                            <div class="flip-card-back">
+                                <p>管辖权</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flip-card">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <h4>Precedent</h4>
+                            </div>
+                            <div class="flip-card-back">
+                                <p>判例</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flip-card">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <h4>Remand</h4>
+                            </div>
+                            <div class="flip-card-back">
+                                <p>发回重审</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 常用短语 -->
+            <div id="phrases" class="tab-content">
+                <table class="vocab-table">
+                    <thead>
+                        <tr>
+                            <th>英文短语</th>
+                            <th>中文翻译</th>
+                            <th>使用场景</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Equal Protection Clause</td>
+                            <td>平等保护条款</td>
+                            <td>宪法第十四修正案</td>
+                        </tr>
+                        <tr>
+                            <td>Separate but equal</td>
+                            <td>隔离但平等</td>
+                            <td>已被推翻的法律原则</td>
+                        </tr>
+                        <tr>
+                            <td>Court of Appeals</td>
+                            <td>上诉法院</td>
+                            <td>司法体系层级</td>
+                        </tr>
+                        <tr>
+                            <td>Supreme Court</td>
+                            <td>最高法院</td>
+                            <td>最高司法机关</td>
+                        </tr>
+                        <tr>
+                            <td>Class action</td>
+                            <td>集体诉讼</td>
+                            <td>代表群体利益的诉讼</td>
+                        </tr>
+                        <tr>
+                            <td>Due process</td>
+                            <td>正当程序</td>
+                            <td>法律程序保障</td>
+                        </tr>
+                        <tr>
+                            <td>Civil rights</td>
+                            <td>公民权利</td>
+                            <td>基本权利保护</td>
+                        </tr>
+                        <tr>
+                            <td>Racial segregation</td>
+                            <td>种族隔离</td>
+                            <td>基于种族的分离</td>
+                        </tr>
+                        <tr>
+                            <td>Judicial review</td>
+                            <td>司法审查</td>
+                            <td>法院审查法律合宪性</td>
+                        </tr>
+                        <tr>
+                            <td>Landmark decision</td>
+                            <td>里程碑式判决</td>
+                            <td>具有重大影响的判决</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 典型句型 -->
+            <div id="sentences" class="tab-content">
+                <div style="display: grid; gap: 1.5rem;">
+                    <div style="background: var(--bg-card); padding: 1.5rem; border-radius: 10px; border-left: 4px solid var(--accent);">
+                        <p><strong>英文：</strong>The Court held that...</p>
+                        <p><strong>中文：</strong>法院裁定...</p>
+                        <p><strong>用法：</strong>用于陈述法院判决结果</p>
+                    </div>
+                    <div style="background: var(--bg-card); padding: 1.5rem; border-radius: 10px; border-left: 4px solid var(--accent);">
+                        <p><strong>英文：</strong>In violation of the Constitution...</p>
+                        <p><strong>中文：</strong>违反宪法...</p>
+                        <p><strong>用法：</strong>指出行为违宪</p>
+                    </div>
+                    <div style="background: var(--bg-card); padding: 1.5rem; border-radius: 10px; border-left: 4px solid var(--accent);">
+                        <p><strong>英文：</strong>The doctrine of "separate but equal" has no place...</p>
+                        <p><strong>中文：</strong>"隔离但平等"原则在...中没有地位</p>
+                        <p><strong>用法：</strong>否定过时法律原则</p>
+                    </div>
+                    <div style="background: var(--bg-card); padding: 1.5rem; border-radius: 10px; border-left: 4px solid var(--accent);">
+                        <p><strong>英文：</strong>Deprive someone of equal protection of the laws</p>
+                        <p><strong>中文：</strong>剥夺某人的法律平等保护</p>
+                        <p><strong>用法：</strong>描述权利被剥夺</p>
+                    </div>
+                    <div style="background: var(--bg-card); padding: 1.5rem; border-radius: 10px; border-left: 4px solid var(--accent);">
+                        <p><strong>英文：</strong>Overturn precedent</p>
+                        <p><strong>中文：</strong>推翻先例</p>
+                        <p><strong>用法：</strong>描述法院改变先前判决</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- 音频控制 -->
+    <div class="audio-control" onclick="toggleAudio()">
+        <span id="audioIcon">🔊</span>
+    </div>
+
+    <!-- 背景音乐 -->
+    <audio id="bgMusic" loop>
+        <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuBzvLZiTYIG2m98OScTgwOUarm7blmFgU7k9n1unEiBC13yO/eizEIHWq+8+OWT" type="audio/wav">
+    </audio>
+
+    <script>
+        // 粒子背景效果
+        const canvas = document.getElementById('particles');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const particles = [];
+        const particleCount = 100;
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.vx = (Math.random() - 0.5) * 0.5;
+                this.vy = (Math.random() - 0.5) * 0.5;
+                this.radius = Math.random() * 2 + 1;
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+
+                if (this.x < 0 || this.x > canvas.width) this.vx = -this.vx;
+                if (this.y < 0 || this.y > canvas.height) this.vy = -this.vy;
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(0, 212, 255, 0.5)';
+                ctx.fill();
+            }
+        }
+
+        for (let i = 0; i < particleCount; i++) {
+            particles.push(new Particle());
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(particle => {
+                particle.update();
+                particle.draw();
+            });
+
+            // 绘制连线
+            particles.forEach((particle, i) => {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particle.x - particles[j].x;
+                    const dy = particle.y - particles[j].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < 100) {
+                        ctx.beginPath();
+                        ctx.moveTo(particle.x, particle.y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.strokeStyle = `rgba(0, 212, 255, ${0.2 * (1 - distance / 100)})`;
+                        ctx.stroke();
+                    }
+                }
+            });
+
+            requestAnimationFrame(animateParticles);
+        }
+
+        animateParticles();
+
+        // 窗口调整大小时更新画布
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        // 标签切换功能
+        function showTab(tabName) {
+            const tabs = document.querySelectorAll('.tab-content');
+            const buttons = document.querySelectorAll('.tab-btn');
+            
+            tabs.forEach(tab => tab.classList.remove('active'));
+            buttons.forEach(btn => btn.classList.remove('active'));
+            
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // 音频控制
+        let isPlaying = false;
+        const audio = document.getElementById('bgMusic');
+        const audioIcon = document.getElementById('audioIcon');
+        const audioControl = document.querySelector('.audio-control');
+
+        function toggleAudio() {
+            if (isPlaying) {
+                audio.pause();
+                audioIcon.textContent = '🔇';
+                audioControl.classList.remove('playing');
+            } else {
+                audio.play().catch(e => console.log('Audio play failed:', e));
+                audioIcon.textContent = '🔊';
+                audioControl.classList.add('playing');
+            }
+            isPlaying = !isPlaying;
+        }
+
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // 滚动动画
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.section').forEach(section => {
+            section.style.opacity = '0';
+            section.style.transform = 'translateY(50px)';
+            section.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(section);
+        });
+
+        // 添加打字机效果
+        function typeWriter(element, text, speed = 50) {
+            let i = 0;
+            element.innerHTML = '';
+            
+            function type() {
+                if (i < text.length) {
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(type, speed);
+                }
+            }
+            
+            type();
+        }
+
+        // 页面加载完成后执行
+        window.addEventListener('load', () => {
+            const title = document.querySelector('h1');
+            const originalText = title.textContent;
+            typeWriter(title, originalText, 100);
+        });
+    </script>
+</body>
+</html>
