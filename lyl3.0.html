@@ -1,0 +1,1261 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Halbman v. Lemke 案例分析</title>
+    <style>
+        :root {
+            --primary: #0d1b2a;
+            --secondary: #1b263b;
+            --accent: #c09f6a;
+            --text: #e0e1dd;
+            --text-secondary: #a9b4c2;
+            --bg: #0a0f18;
+            --card-bg: rgba(27, 38, 59, 0.6);
+            --glass: rgba(255, 255, 255, 0.08);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+            background: linear-gradient(135deg, var(--bg) 0%, #0d1b2a 100%);
+            color: var(--text);
+            line-height: 1.7;
+            overflow-x: hidden;
+            min-height: 100vh;
+            background-attachment: fixed;
+            background-size: cover;
+            position: relative;
+        }
+
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 10% 20%, rgba(192, 159, 106, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(13, 27, 42, 0.3) 0%, transparent 30%);
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 80px 0 60px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 4px;
+            background: var(--accent);
+            border-radius: 2px;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            background: linear-gradient(to right, var(--text), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            animation: titleGlow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes titleGlow {
+            from { filter: drop-shadow(0 0 5px rgba(192, 159, 106, 0.3)); }
+            to { filter: drop-shadow(0 0 15px rgba(192, 159, 106, 0.6)); }
+        }
+
+        .subtitle {
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+            font-weight: 300;
+            letter-spacing: 1px;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .designer {
+            font-size: 1rem;
+            color: var(--accent);
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            animation: fadeInUp 1s ease-out 0.3s both;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section {
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .section::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent), transparent);
+            opacity: 0.7;
+        }
+
+        .section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .section:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+        }
+
+        .section-title {
+            font-size: 2.2rem;
+            color: var(--text);
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            position: relative;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .section-title::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 80px;
+            height: 3px;
+            background: var(--accent);
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+
+        .section-title:hover::after {
+            width: 120px;
+        }
+
+        .subsection {
+            margin-bottom: 30px;
+            padding-left: 20px;
+            border-left: 3px solid var(--accent);
+            transition: var(--transition);
+        }
+
+        .subsection:hover {
+            border-left-width: 5px;
+            padding-left: 18px;
+        }
+
+        .subsection-title {
+            font-size: 1.5rem;
+            color: var(--accent);
+            margin-bottom: 15px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .subsection-title::before {
+            content: "•";
+            margin-right: 10px;
+            font-size: 1.8rem;
+            color: var(--accent);
+            transition: transform 0.3s ease;
+        }
+
+        .subsection-title:hover::before {
+            transform: scale(1.2);
+        }
+
+        .subsection-content {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            max-height: 500px;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+        }
+
+        .subsection.collapsed .subsection-content {
+            max-height: 0;
+        }
+
+        .vocabulary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .vocab-item {
+            background: rgba(13, 27, 42, 0.4);
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid var(--accent);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            transform-style: preserve-3d;
+        }
+
+        .vocab-item::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(192, 159, 106, 0.1), transparent);
+            z-index: -1;
+            transition: var(--transition);
+        }
+
+        .vocab-item:hover {
+            transform: translateY(-5px) rotateX(5deg);
+            background: rgba(13, 27, 42, 0.6);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+
+        .vocab-term {
+            font-weight: 600;
+            color: var(--accent);
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            transition: var(--transition);
+        }
+
+        .vocab-term::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: rgba(192, 159, 106, 0.3);
+            margin-left: 10px;
+            transition: var(--transition);
+        }
+
+        .vocab-item:hover .vocab-term::after {
+            background: rgba(192, 159, 106, 0.6);
+        }
+
+        .vocab-meaning {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            transition: var(--transition);
+        }
+
+        .vocab-item:hover .vocab-meaning {
+            color: var(--text);
+        }
+
+        .sentence-examples {
+            background: rgba(13, 27, 42, 0.4);
+            padding: 25px;
+            border-radius: 15px;
+            margin-top: 20px;
+            border: 1px solid rgba(192, 159, 106, 0.1);
+        }
+
+        .sentence-item {
+            margin-bottom: 20px;
+            padding: 20px;
+            background: rgba(10, 15, 24, 0.5);
+            border-radius: 10px;
+            border-left: 3px solid var(--accent);
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sentence-item::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(192, 159, 106, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .sentence-item:hover::before {
+            left: 100%;
+        }
+
+        .sentence-item:hover {
+            background: rgba(10, 15, 24, 0.7);
+            transform: translateX(5px);
+            border-left-width: 5px;
+        }
+
+        .sentence-en {
+            color: var(--text);
+            font-style: italic;
+            margin-bottom: 10px;
+            font-size: 1.05rem;
+            line-height: 1.6;
+            position: relative;
+            padding-left: 15px;
+            transition: var(--transition);
+        }
+
+        .sentence-en::before {
+            content: """";
+            position: absolute;
+            left: 0;
+            top: -5px;
+            font-size: 2rem;
+            color: var(--accent);
+            opacity: 0.5;
+            transition: var(--transition);
+        }
+
+        .sentence-item:hover .sentence-en::before {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
+        .sentence-zh {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            max-height: 100px;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .sentence-item.expanded .sentence-zh {
+            max-height: 200px;
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, rgba(192, 159, 106, 0.2) 0%, rgba(192, 159, 106, 0.1) 100%);
+            padding: 2px 8px;
+            border-radius: 4px;
+            color: var(--accent);
+            font-weight: 500;
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .highlight:hover {
+            background: linear-gradient(120deg, rgba(192, 159, 106, 0.3) 0%, rgba(192, 159, 106, 0.2) 100%);
+            transform: scale(1.05);
+        }
+
+        .highlight:active {
+            transform: scale(0.95);
+        }
+
+        .method-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .method-list li {
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(169, 180, 194, 0.1);
+            display: flex;
+            align-items: flex-start;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .method-list li:last-child {
+            border-bottom: none;
+        }
+
+        .method-list li::before {
+            content: "➤";
+            color: var(--accent);
+            font-weight: bold;
+            margin-right: 15px;
+            font-size: 1.2rem;
+            min-width: 24px;
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .method-list li:hover {
+            background: rgba(192, 159, 106, 0.05);
+            padding-left: 10px;
+        }
+
+        .method-list li:hover::before {
+            transform: translateX(5px);
+            color: #d4b483;
+        }
+
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: help;
+            border-bottom: 1px dashed var(--accent);
+            transition: var(--transition);
+        }
+
+        .tooltip:hover {
+            border-bottom-style: solid;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 240px;
+            background: var(--secondary);
+            color: var(--text);
+            text-align: center;
+            border-radius: 8px;
+            padding: 12px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.9rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+            line-height: 1.5;
+        }
+
+        .tooltip .tooltiptext::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: var(--secondary) transparent transparent transparent;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* 新增交互元素样式 */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent), #d4b483);
+            z-index: 1000;
+            transition: width 0.3s ease;
+        }
+
+        .scroll-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: var(--accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            z-index: 999;
+        }
+
+        .scroll-to-top.visible {
+            opacity: 0.7;
+            visibility: visible;
+        }
+
+        .scroll-to-top:hover {
+            opacity: 1;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+        }
+
+        .scroll-to-top::before {
+            content: "↑";
+            font-size: 24px;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .search-box {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1001;
+        }
+
+        .search-input {
+            background: rgba(27, 38, 59, 0.8);
+            border: 1px solid var(--accent);
+            border-radius: 25px;
+            padding: 10px 20px;
+            color: var(--text);
+            font-size: 14px;
+            width: 200px;
+            transition: var(--transition);
+            backdrop-filter: blur(10px);
+        }
+
+        .search-input:focus {
+            outline: none;
+            width: 250px;
+            box-shadow: 0 0 20px rgba(192, 159, 106, 0.3);
+        }
+
+        .search-input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .highlight-search {
+            background: rgba(192, 159, 106, 0.5) !important;
+            animation: searchPulse 1s ease-in-out;
+        }
+
+        @keyframes searchPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: var(--secondary);
+            margin: 5% auto;
+            padding: 30px;
+            border: 1px solid var(--accent);
+            border-radius: 20px;
+            width: 80%;
+            max-width: 600px;
+            position: relative;
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .close {
+            color: var(--accent);
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .close:hover {
+            color: var(--text);
+            transform: scale(1.1);
+        }
+
+        .modal-title {
+            color: var(--accent);
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+
+        .modal-text {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .section {
+                padding: 25px;
+            }
+            
+            .section-title {
+                font-size: 1.8rem;
+            }
+            
+            .vocabulary-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            header {
+                padding: 60px 0 40px;
+            }
+
+            .search-box {
+                top: 10px;
+                right: 10px;
+            }
+
+            .search-input {
+                width: 150px;
+            }
+
+            .search-input:focus {
+                width: 180px;
+            }
+        }
+
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: var(--transition);
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .interactive-element {
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .interactive-element:hover {
+            background: rgba(192, 159, 106, 0.1);
+            transform: translateY(-3px);
+        }
+
+        .interactive-element::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: width 0.3s ease;
+        }
+
+        .interactive-element:hover::after {
+            width: 100%;
+        }
+
+        /* 加载动画 */
+        .loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 3000;
+            transition: opacity 0.5s ease;
+        }
+
+        .loader.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loader-circle {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(192, 159, 106, 0.3);
+            border-top: 3px solid var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- 加载动画 -->
+    <div class="loader" id="loader">
+        <div class="loader-circle"></div>
+    </div>
+
+    <!-- 进度条 -->
+    <div class="progress-bar" id="progressBar"></div>
+
+    <!-- 搜索框 -->
+    <div class="search-box">
+        <input type="text" class="search-input" placeholder="搜索内容..." id="searchInput">
+    </div>
+
+    <!-- 返回顶部按钮 -->
+    <div class="scroll-to-top" id="scrollToTop"></div>
+
+    <!-- 模态框 -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3 class="modal-title" id="modalTitle"></h3>
+            <p class="modal-text" id="modalText"></p>
+        </div>
+    </div>
+
+    <div class="container">
+        <header>
+            <h1>Halbman v. Lemke</h1>
+            <p class="subtitle">Supreme Court of Wisconsin, 1980</p>
+            <p class="designer">设计者: 吕依林</p>
+        </header>
+
+        <section class="section fade-in">
+            <h2 class="section-title interactive-element">1. 设计工具、方法、过程</h2>
+            
+            <div class="subsection">
+                <h3 class="subsection-title interactive-element">设计工具</h3>
+                <ul class="method-list">
+                    <li class="interactive-element" data-info="HTML5是最新的HTML标准，提供了更多的语义化标签和API">HTML5 + CSS3 构建响应式布局</li>
+                    <li class="interactive-element" data-info="CSS Grid和Flexbox是现代CSS布局的强大工具">CSS Grid 和 Flexbox 实现自适应网格系统</li>
+                    <li class="interactive-element" data-info="原生JavaScript提供了更好的性能和兼容性">原生 JavaScript 实现交互效果</li>
+                    <li class="interactive-element" data-info="CSS动画可以创建流畅的视觉效果">CSS 动画实现平滑过渡效果</li>
+                </ul>
+            </div>
+
+            <div class="subsection">
+                <h3 class="subsection-title interactive-element">设计方法</h3>
+                <ul class="method-list">
+                    <li class="interactive-element" data-info="移动优先确保在小屏幕上也有良好体验">移动优先设计原则，确保在各种设备上的良好体验</li>
+                    <li class="interactive-element" data-info="渐变配色可以营造现代感和专业感">采用现代渐变配色方案，营造专业法律文档氛围</li>
+                    <li class="interactive-element" data-info="卡片式布局有助于信息的组织和展示">卡片式布局增强内容可读性</li>
+                    <li class="interactive-element" data-info="适当的动画可以提升用户体验">交互动画提升用户体验</li>
+                </ul>
+            </div>
+
+            <div class="subsection">
+                <h3 class="subsection-title interactive-element">设计过程</h3>
+                <ul class="method-list">
+                    <li class="interactive-element" data-info="内容分析是设计的第一步">分析案例内容，提取关键信息点</li>
+                    <li class="interactive-element" data-info="良好的信息架构有助于用户理解">设计信息架构，组织内容层次</li>
+                    <li class="interactive-element" data-info="原型设计可以帮助验证设计思路">创建响应式布局原型</li>
+                    <li class="interactive-element" data-info="交互元素让页面更生动">添加交互元素和动画效果</li>
+                    <li class="interactive-element" data-info="移动端优化是必不可少的步骤">优化移动端显示效果</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="section fade-in">
+            <h2 class="section-title interactive-element">2. 法庭意见书要素</h2>
+            
+            <div class="subsection">
+                <h3 class="subsection-title interactive-element">Case Background</h3>
+                <div class="subsection-content">
+                    <p>James Halbman, a minor, purchased a 1968 Oldsmobile from Michael Lemke for <span class="highlight interactive-element" data-info="这在1973年是一笔相当大的金额">$1,250</span>. The contract was made on <span class="highlight interactive-element" data-info="合同签订的具体日期">July 13, 1973</span>, with Halbman paying <span class="highlight interactive-element" data-info="首付款金额">$1,000</span> initially and agreeing to pay <span class="highlight interactive-element" data-info="分期付款计划">$25 per week</span> until the balance was paid.--------James Halbman,Jr.,a minor, entered into a contract to purchase a 1968 Oldsmobile from Michael Lemke for $1,250, $25 paid weekly.Halbman paid $1,100 over several weeks but had not fully paid when a connecting rod in the engine broke. Lemke offered to install a used engine if Halbman bought one (while disclaiming liability),but Halbman instead had the car repaired at a garage for $637.40(which he did not pay). Lemke transferred the car title to Halbman (even though the car was not paid off, likely to avoid liability).Halbman then returned the title, disaffirmed the contract, and demanded a refund of all payments. Lemke refused. Subsequently,the garage, unpaid for repairs, removed the engine and transmission and towed the car to Halbmans fathers house. Lemke refused to remove the car, and it was vandalized multiple times, rendering it unsalvageable. </p>
+                </div>
+            </div>
+
+            <div class="subsection">
+                <h3 class="subsection-title interactive-element">Key Issues</h3>
+                <div class="subsection-content">
+                    <ul style="margin-left: 20px; color: #a9b4c2;">
+                        <li class="interactive-element" data-info="这是本案的核心法律问题">Whether a minor must make restitution for damage to property prior to disaffirmance</li>
+                        <li class="interactive-element" data-info="未成年人保护原则的范围">The scope of the infancy doctrine protection</li>
+                        <li class="interactive-element" data-info="法律需要在保护未成年人和维护交易安全之间找到平衡">Balance between minor protection and vendor rights</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="subsection">
+                <h3 class="subsection-title interactive-element">Court's Holding</h3>
+                <div class="subsection-content">
+                    <p>The court held that <span class="highlight interactive-element" data-info="这是本案最重要的法律原则">a minor who disaffirms a contract for the purchase of an item which is not a necessity may recover his purchase price without liability for use, depreciation, damage, or other diminution in value</span>, absent misrepresentation or tortious damage to the property.</p>
+                </div>
+            </div>
+
+            <div class="subsection">
+                <h3 class="subsection-title interactive-element">Rationale</h3>
+                <div class="subsection-content">
+                    <p>The infancy doctrine is designed to protect minors from improvident contracts. Requiring restitution for depreciation would <span class="tooltip interactive-element">defeat this purpose<span class="tooltiptext">The court emphasized that such a requirement would force minors to bear the cost of the very improvidence from which the infancy doctrine is supposed to protect them.</span></span> by binding the minor to obligations the law allows them to avoid.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section fade-in">
+            <h2 class="section-title interactive-element">3. 双语知识库</h2>
+            
+            <div class="subsection">
+                <h3 class="subsection-title interactive-element">核心术语 (20词)</h3>
+                <div class="vocabulary-grid">
+                    <div class="vocab-item interactive-element" data-info="未成年人拒绝履行合同的法律行为">
+                        <div class="vocab-term">Disaffirm</div>
+                        <div class="vocab-meaning">拒绝履行（合同）</div>
+                    </div>
+                    <div class="vocab-item interactive-element" data-info="保护未成年人免受不利合同影响的法律原则">
+                        <div class="vocab-term">Infancy Doctrine</div>
+                        <div class="vocab-meaning">未成年人保护原则</div>
+                    </div>
+                    <div class="vocab-item interactive-element" data-info="恢复原状或返还财产的法律救济">
+                        <div class="vocab-term">Restitution</div>
+                        <div class="vocab-meaning">恢复原状/返还</div>
+                    </div>
+                    <div class="vocab-item interactive-element" data-info="合同双方交换的价值">
+                        <div class="vocab-term">Consideration</div>
+                        <div class="vocab-meaning">对价</div>
+                    </div>
+                    <div class="vocab-item interactive-element" data-info="生活必需品，未成年人不能随意拒绝">
+                        <div class="vocab-term">Necessity</div>
+                        <div class="vocab-meaning">必需品</div>
+                    </div>
+                    <div class="vocab-item interactive-element" data-info="可以被撤销的合同">
+                        <div class="vocab-term">Voidable</div>
+                        <div class="vocab-meaning">可撤销的</div>
+                    </div>
+                    <div class="vocab-item interactive-element" data-info="未满法定年龄的人">
+                        <div class="vocab-term">Minor</div>
+                        <div class="vocab-meaning">未成年人</div>
+                    </div>
+                    <div class="vocab-item interactive-element" data-info="销售商品的一方">
+                        <div class="vocab-term">Vendor</div>
+                        <div class="vocab-meaning">卖方</div>
+                    </div>
+                    <div class="vocab-item interactive-element" data-info="购买商品的一方">
+                        <div class="vocab-term">Vendee</div>
+                        <div class="vocab-meaning">买方</div>
+                    </div>
+                    <div class="vocab-item interactive-element" data-info="具有法律约束力的协议">
+                        <div class="vocab-term">Contract</div>
+                        <div class="vocab-meaning">合同</div>
+                    </div>
+                    <div class="vocab-item interactive-element" data-info="与侵权行为相关的">
+                        <div class="vocab-term">Tortious</div>
+                        <div class="vocab-meaning">侵权的</div>
+                    </div>
+                    <div class="vocab-item interactive-element" data-info="不真实的陈述">
+                        <div class="vocab-term">Misrepresentation</div>
+                        <div class="vocab-meaning">虚假陈述</div>
+                    </div>
+                    <div class="vocab-item interactive-element" data-info="价值随时间减少">
+                        <div class="vocab-term">Depreciation</div>
+                        <div class="vocab-meaning">贬值</div>
+                    </div>
+                    <div class="vocab-item interactive-element" data-info="对财产的担保权益">
+                        <div class="vocab-term">Lien</div>
+                        <div class="vocab-meaning">留置权</div>
+                    </div>
+                    <div class="vocab-item interactive-element" data-info="对财产的合法所有权">
+                        <div class="vocab-term">Title</div>
+                        <div class="vocab-meaning">所有权</div>
+                    </div>
+                    <div class="vocab-item interactive-element" data-info="初审法院">
+                        <div class="vocab-term">Circuit Court</div>
+                        <div class="vocab-meaning">巡回法院</div>
+                    </div>
+                    <div class="vocab-item interactive-element" data-info="审理上诉的法院">
+                        <div class="vocab-term">Appellate Court</div>
+                        <div class="vocab-meaning">上诉法院</div>
+                    </div>
+                    <div class="vocab-item interactive-element" data-info="法院的正式决定">
+                        <div class="vocab-term">Judgment</div>
+                        <div class="vocab-meaning">判决</div>
+                    </div>
+                    <div class="vocab-item interactive-element" data-info="被告对原告的反诉">
+                        <div class="vocab-term">Counterclaim</div>
+                        <div class="vocab-meaning">反诉</div>
+                    </div>
+                    <div class="vocab-item interactive-element" data-info="故意破坏财产的行为">
+                        <div class="vocab-term">Vandalism</div>
+                        <div class="vocab-meaning">故意破坏</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="subsection">
+                <h3 class="subsection-title interactive-element">重要短语 (10短语)</h3>
+                <div class="vocabulary-grid">
+                    <div class="vocab-item interactive-element" data-info="未成年人行使撤销权">
+                        <div class="vocab-term">Disaffirm a contract</div>
+                        <div class="vocab-meaning">拒绝履行合同</div>
+                    </div>
+                    <div class="vocab-item interactive-element" data-info="进行赔偿或恢复原状">
+                        <div class="vocab-term">Make restitution</div>
+                        <div class="vocab-meaning">进行赔偿/恢复原状</div>
+                    </div>
+                    <div class="vocab-item interactive-element" data-info="合同的法律效力状态">
+                        <div class="vocab-term">Void or voidable</div>
+                        <div class="vocab-meaning">无效或可撤销</div>
+                    </div>
+                    <div class="vocab-item interactive-element" data-info="未成年人的选择权">
+                        <div class="vocab-term">At the minor's option</div>
+                        <div class="vocab-meaning">由未成年人选择</div>
+                    </div>
+                    <div class="vocab-item interactive-element" data-info="生活必需的商品">
+                        <div class="vocab-term">Items of necessity</div>
+                        <div class="vocab-meaning">必需品</div>
+                    </div>
+                    <div class="vocab-item interactive-element" data-info="商品的购买价格">
+                        <div class="vocab-term">Purchase price</div>
+                        <div class="vocab-meaning">购买价格</div>
+                    </div>
+                    <div class="vocab-item interactive-element" data-info="财产价值的减少">
+                        <div class="vocab-term">Diminution in value</div>
+                        <div class="vocab-meaning">价值减少</div>
+                    </div>
+                    <div class="vocab-item interactive-element" data-info="因侵权行为造成的损害">
+                        <div class="vocab-term">Tortious damage</div>
+                        <div class="vocab-meaning">侵权损害</div>
+                    </div>
+                    <div class="vocab-item interactive-element" data-info="没有过错的卖方">
+                        <div class="vocab-term">Innocent vendor</div>
+                        <div class="vocab-meaning">无辜卖方</div>
+                    </div>
+                    <div class="vocab-item interactive-element" data-info="英美法系的法律传统">
+                        <div class="vocab-term">Common law tradition</div>
+                        <div class="vocab-meaning">普通法传统</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="subsection">
+                <h3 class="subsection-title interactive-element">典型句型 (5句型)</h3>
+                <div class="sentence-examples">
+                    <div class="sentence-item interactive-element" data-info="这是本案的核心法律原则">
+                        <div class="sentence-en">"The court held that a minor who disaffirms a contract for the purchase of an item which is not a necessity may recover his purchase price without liability for use, depreciation, damage, or other diminution in value."</div>
+                        <div class="sentence-zh">"法院裁定，拒绝购买非必需品合同的未成年人可以收回其购买价格，而无需对使用、折旧、损坏或其他价值减少承担责任。"</div>
+                    </div>
+                    <div class="sentence-item interactive-element" data-info="解释了未成年人保护原则的目的">
+                        <div class="sentence-en">"The infancy doctrine is designed to protect minors from foolishly squandering their wealth through improvident contracts."</div>
+                        <div class="sentence-zh">"未成年人保护原则旨在保护未成年人避免因轻率合同而愚蠢地挥霍财富。"</div>
+                    </div>
+                    <div class="sentence-item interactive-element" data-info="说明了未成年人合同的基本规则">
+                        <div class="sentence-en">"A contract of a minor for items which are not necessities is void or voidable at the minor's option."</div>
+                        <div class="sentence-zh">"未成年人购买非必需品的合同是无效的或可由未成年人选择撤销的。"</div>
+                    </div>
+                    <div class="sentence-item interactive-element" data-info="强调了未成年人权利的独立性">
+                        <div class="sentence-en">"The minor's right to disaffirm is not contingent upon the return of the property."</div>
+                        <div class="sentence-zh">"未成年人拒绝履行合同的权利并不取决于财产的返还。"</div>
+                    </div>
+                    <div class="sentence-item interactive-element" data-info="说明了无需赔偿的例外情况">
+                        <div class="sentence-en">"Absent misrepresentation or tortious damage to the property, the minor need not make restitution for diminished value."</div>
+                        <div class="sentence-zh">"在没有虚假陈述或对财产的侵权损害的情况下，未成年人无需为价值减少进行赔偿。"</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // 页面加载完成后隐藏加载动画
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                document.getElementById('loader').classList.add('hidden');
+            }, 500);
+        });
+
+        // 滚动进度条
+        window.addEventListener('scroll', function() {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById('progressBar').style.width = scrolled + '%';
+
+            // 显示/隐藏返回顶部按钮
+            const scrollToTop = document.getElementById('scrollToTop');
+            if (winScroll > 300) {
+                scrollToTop.classList.add('visible');
+            } else {
+                scrollToTop.classList.remove('visible');
+            }
+        });
+
+        // 返回顶部功能
+        document.getElementById('scrollToTop').addEventListener('click', function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // 添加滚动动画效果
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in').forEach(el => {
+            observer.observe(el);
+        });
+
+        // 添加点击交互效果
+        document.querySelectorAll('.interactive-element').forEach(element => {
+            element.addEventListener('click', function() {
+                this.style.transform = 'scale(0.98)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 100);
+            });
+        });
+
+        // 添加词汇项点击效果
+        document.querySelectorAll('.vocab-item').forEach(item => {
+            item.addEventListener('click', function() {
+                this.style.background = 'rgba(192, 159, 106, 0.15)';
+                setTimeout(() => {
+                    this.style.background = '';
+                }, 300);
+
+                // 显示模态框
+                const info = this.getAttribute('data-info');
+                if (info) {
+                    showModal(this.querySelector('.vocab-term').textContent, info);
+                }
+            });
+        });
+
+        // 句子示例点击展开/收起
+        document.querySelectorAll('.sentence-item').forEach(item => {
+            item.addEventListener('click', function() {
+                this.classList.toggle('expanded');
+                this.style.boxShadow = '0 0 0 2px var(--accent)';
+                setTimeout(() => {
+                    this.style.boxShadow = '';
+                }, 500);
+            });
+        });
+
+        // 高亮文本点击效果
+        document.querySelectorAll('.highlight').forEach(highlight => {
+            highlight.addEventListener('click', function() {
+                const info = this.getAttribute('data-info');
+                if (info) {
+                    showModal('详细信息', info);
+                }
+            });
+        });
+
+        // 模态框功能
+        const modal = document.getElementById('modal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalText = document.getElementById('modalText');
+        const closeBtn = document.querySelector('.close');
+
+        function showModal(title, text) {
+            modalTitle.textContent = title;
+            modalText.textContent = text;
+            modal.style.display = 'block';
+        }
+
+        closeBtn.addEventListener('click', function() {
+            modal.style.display = 'none';
+        });
+
+        window.addEventListener('click', function(event) {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+
+        // 搜索功能
+        const searchInput = document.getElementById('searchInput');
+        let searchTimeout;
+
+        searchInput.addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            const searchTerm = this.value.toLowerCase();
+
+            // 清除之前的高亮
+            document.querySelectorAll('.highlight-search').forEach(el => {
+                el.classList.remove('highlight-search');
+            });
+
+            if (searchTerm.length > 0) {
+                searchTimeout = setTimeout(() => {
+                    // 搜索并高亮匹配的内容
+                    const allTextElements = document.querySelectorAll('p, li, .vocab-term, .vocab-meaning, .sentence-en, .sentence-zh');
+                    let firstMatch = null;
+
+                    allTextElements.forEach(element => {
+                        const text = element.textContent.toLowerCase();
+                        if (text.includes(searchTerm)) {
+                            element.classList.add('highlight-search');
+                            if (!firstMatch) {
+                                firstMatch = element;
+                            }
+                        }
+                    });
+
+                    // 滚动到第一个匹配项
+                    if (firstMatch) {
+                        firstMatch.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'center'
+                        });
+                    }
+                }, 300);
+            }
+        });
+
+        // 子节折叠功能
+        document.querySelectorAll('.subsection-title').forEach(title => {
+            title.addEventListener('click', function() {
+                const subsection = this.parentElement;
+                subsection.classList.toggle('collapsed');
+            });
+        });
+
+        // 节标题点击展开/收起所有子节
+        document.querySelectorAll('.section-title').forEach(title => {
+            title.addEventListener('click', function() {
+                const section = this.parentElement;
+                const subsections = section.querySelectorAll('.subsection');
+                const allCollapsed = Array.from(subsections).every(sub => sub.classList.contains('collapsed'));
+                
+                subsections.forEach(sub => {
+                    if (allCollapsed) {
+                        sub.classList.remove('collapsed');
+                    } else {
+                        sub.classList.add('collapsed');
+                    }
+                });
+            });
+        });
+
+        // 添加键盘快捷键
+        document.addEventListener('keydown', function(e) {
+            // Ctrl + F 聚焦搜索框
+            if (e.ctrlKey && e.key === 'f') {
+                e.preventDefault();
+                searchInput.focus();
+            }
+            
+            // ESC 关闭模态框
+            if (e.key === 'Escape' && modal.style.display === 'block') {
+                modal.style.display = 'none';
+            }
+        });
+
+        // 添加鼠标悬停音效（可选）
+        let audioContext;
+        let audioEnabled = false;
+
+        // 点击启用音频
+        document.addEventListener('click', function() {
+            if (!audioEnabled) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                audioEnabled = true;
+            }
+        }, { once: true });
+
+        function playHoverSound() {
+            if (!audioEnabled || !audioContext) return;
+            
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+            oscillator.frequency.exponentialRampToValueAtTime(400, audioContext.currentTime + 0.1);
+            
+            gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.1);
+        }
+
+        // 为交互元素添加悬停音效
+        document.querySelectorAll('.vocab-item, .interactive-element, .sentence-item').forEach(element => {
+            element.addEventListener('mouseenter', playHoverSound);
+        });
+
+        // 添加页面可见性检测，当页面重新可见时添加动画
+        document.addEventListener('visibilitychange', function() {
+            if (!document.hidden) {
+                document.querySelectorAll('.section').forEach((section, index) => {
+                    setTimeout(() => {
+                        section.classList.add('visible');
+                    }, index * 100);
+                });
+            }
+        });
+    </script>
+</body>
+</html>
