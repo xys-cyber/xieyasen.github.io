@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brown v. Board of Education - Interactive Case Study</title>
+    <style>
+        :root {
+            --primary-bg: #0a0a0a;
+            --secondary-bg: #1a1a1a;
+            --accent-bg: #2a2a2a;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+            --accent-gold: #d4af37;
+            --accent-blue: #4a90e2;
+            --hover-effect: rgba(212, 175, 55, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+            background: var(--primary-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(74, 144, 226, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(212, 175, 55, 0.1) 0%, transparent 50%);
+            background-attachment: fixed;
+        }
+
+        /* 导航栏 */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, var(--accent-gold), var(--accent-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-gold);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent-gold);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* 主要内容 */
+        main {
+            margin-top: 80px;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* 标题样式 */
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 2rem;
+            background: linear-gradient(45deg, var(--accent-gold), var(--accent-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+            position: relative;
+        }
+
+        h1::after {
+            content: '';
+            display: block;
+            width: 100px;
+            height: 3px;
+            background: var(--accent-gold);
+            margin: 1rem auto;
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin: 3rem 0 1.5rem;
+            color: var(--accent-gold);
+            position: relative;
+            padding-left: 1rem;
+        }
+
+        h2::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background: var(--accent-gold);
+        }
+
+        /* 卡片样式 */
+        .card {
+            background: var(--secondary-bg);
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 1.5rem 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(212, 175, 55, 0.2);
+            border-color: var(--accent-gold);
+        }
+
+        /* 设计工具部分 */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .tool-item {
+            background: var(--accent-bg);
+            padding: 1.5rem;
+            border-radius: 10px;
+            border-left: 4px solid var(--accent-blue);
+            transition: all 0.3s ease;
+        }
+
+        .tool-item:hover {
+            background: var(--hover-effect);
+            transform: translateX(10px);
+        }
+
+        /* 法庭要素部分 */
+        .court-elements {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .element-card {
+            background: linear-gradient(135deg, var(--secondary-bg), var(--accent-bg));
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .element-card:hover {
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-blue));
+            color: var(--primary-bg);
+            transform: scale(1.05);
+        }
+
+        /* 双语知识库表格 */
+        .vocabulary-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            background: var(--secondary-bg);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .vocabulary-table th {
+            background: var(--accent-gold);
+            color: var(--primary-bg);
+            padding: 1rem;
+            text-align: left;
+            font-weight: bold;
+        }
+
+        .vocabulary-table td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .vocabulary-table tr:hover {
+            background: var(--hover-effect);
+        }
+
+        /* 短语卡片 */
+        .phrase-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .phrase-card {
+            background: var(--accent-bg);
+            padding: 1.5rem;
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .phrase-card::before {
+            content: '"';
+            position: absolute;
+            top: -20px;
+            left: 10px;
+            font-size: 5rem;
+            color: var(--accent-gold);
+            opacity: 0.3;
+        }
+
+        /* 句型展示 */
+        .sentence-patterns {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .pattern-item {
+            background: var(--secondary-bg);
+            padding: 1.5rem;
+            border-radius: 10px;
+            border-left: 5px solid var(--accent-blue);
+            position: relative;
+        }
+
+        .pattern-item .english {
+            color: var(--text-primary);
+            font-style: italic;
+            margin-bottom: 0.5rem;
+        }
+
+        .pattern-item .chinese {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* 互动功能 */
+        .interactive-btn {
+            background: linear-gradient(45deg, var(--accent-gold), var(--accent-blue));
+            color: var(--primary-bg);
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin: 1rem 0.5rem;
+        }
+
+        .interactive-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(212, 175, 55, 0.4);
+        }
+
+        /* 音频控制 */
+        .audio-controls {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--secondary-bg);
+            padding: 1rem;
+            border-radius: 50px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .audio-btn {
+            background: var(--accent-gold);
+            color: var(--primary-bg);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .audio-btn:hover {
+            transform: scale(1.1);
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            h2 {
+                font-size: 1.5rem;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .tools-grid,
+            .court-elements,
+            .phrase-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .vocabulary-table {
+                font-size: 0.9rem;
+            }
+        }
+
+        /* 动画效果 */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        /* 滚动条样式 */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--primary-bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent-gold);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-blue);
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <div class="logo">Brown v. Board of Education</div>
+            <ul class="nav-links">
+                <li><a href="#design">设计方法</a></li>
+                <li><a href="#elements">法庭要素</a></li>
+                <li><a href="#vocabulary">双语知识库</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main>
+        <div class="container">
+            <h1 class="fade-in">Brown v. Board of Education 案例研究</h1>
+            <p style="text-align: center; color: var(--text-secondary); margin-bottom: 3rem;">
+                设计者：周晓妍 | 交互式法律案例学习平台
+            </p>
+
+            <section id="design" class="fade-in">
+                <h2>1. 设计工具、方法、过程</h2>
+                <div class="card">
+                    <h3 style="color: var(--accent-blue); margin-bottom: 1rem;">设计理念</h3>
+                    <p>本网站采用现代化深色主题设计，结合法律案件的严肃性与数字交互的趣味性，通过渐变色彩、卡片式布局和微交互动画，创造出专业而富有吸引力的学习体验。</p>
+                </div>
+                
+                <div class="tools-grid">
+                    <div class="tool-item">
+                        <h4>🎨 视觉设计</h4>
+                        <p>使用暗色背景减少眼部疲劳，金色和蓝色渐变突出重要信息，卡片阴影增强层次感。</p>
+                    </div>
+                    <div class="tool-item">
+                        <h4>📱 响应式布局</h4>
+                        <p>采用CSS Grid和Flexbox实现自适应布局，确保在各种设备上都有良好的显示效果。</p>
+                    </div>
+                    <div class="tool-item">
+                        <h4>⚡ 交互体验</h4>
+                        <p>悬停效果、平滑过渡和微动画提升用户体验，增强学习的趣味性。</p>
+                    </div>
+                    <div class="tool-item">
+                        <h4>🔧 技术栈</h4>
+                        <p>纯HTML+CSS实现，无需额外依赖，加载快速，兼容性好。</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3 style="color: var(--accent-blue); margin-bottom: 1rem;">开发过程</h3>
+                    <ol style="padding-left: 2rem; color: var(--text-secondary);">
+                        <li>需求分析：确定内容结构和功能需求</li>
+                        <li>视觉设计：选择配色方案和字体样式</li>
+                        <li>布局规划：设计响应式网格系统</li>
+                        <li>交互实现：添加动画和过渡效果</li>
+                        <li>测试优化：多设备测试和性能优化</li>
+                    </ol>
+                </div>
+            </section>
+
+            <section id="elements" class="fade-in">
+                <h2>2. Court Opinion Elements</h2>
+                <div class="court-elements">
+                    <div class="element-card" onclick="playSound('case')">
+                        <h4>Case Citation</h4>
+                        <p>Brown v. Board of Education, 347 U.S. 483 (1954)</p>
+                    </div>
+                    <div class="element-card" onclick="playSound('facts')">
+                        <h4>Key Facts</h4>
+                        <p>Racial segregation in public schools</p>
+                    </div>
+                    <div class="element-card" onclick="playSound('issue')">
+                        <h4>Legal Issue</h4>
+                        <p>Does segregation violate Equal Protection?</p>
+                    </div>
+                    <div class="element-card" onclick="playSound('holding')">
+                        <h4>Holding</h4>
+                        <p>Separation is inherently unequal</p>
+                    </div>
+                    <div class="element-card" onclick="playSound('rationale')">
+                        <h4>Rationale</h4>
+                        <p>Psychological harm to minority children</p>
+                    </div>
+                    <div class="element-card" onclick="playSound('precedent')">
+                        <h4>Precedent Overruled</h4>
+                        <p>Plessy v. Ferguson (1896)</p>
+                    </div>
+                </div>
+
+                <div class="card" style="margin-top: 2rem;">
+                    <h3 style="color: var(--accent-blue); margin-bottom: 1rem;">Landmark Decision Analysis</h3>
+                    <p style="color: var(--text-secondary); margin-bottom: 1rem;">
+                        The Supreme Court's unanimous decision in Brown v. Board of Education marked a pivotal moment in American constitutional law, establishing that racial segregation in public education violates the Equal Protection Clause of the Fourteenth Amendment.
+                    </p>
+                    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                        <button class="interactive-btn" onclick="showDetail('impact')">Social Impact</button>
+                        <button class="interactive-btn" onclick="showDetail('legal')">Legal Significance</button>
+                        <button class="interactive-btn" onclick="showDetail('enforcement')">Enforcement Challenges</button>
+                    </div>
+                </div>
+            </section>
+
+            <section id="vocabulary" class="fade-in">
+                <h2>3. 双语知识库</h2>
+                
+                <h3 style="color: var(--accent-gold); margin: 2rem 0 1rem;">法律术语 Vocabulary</h3>
+                <table class="vocabulary-table">
+                    <thead>
+                        <tr>
+                            <th>英文术语</th>
+                            <th>中文释义</th>
+                            <th>发音</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Segregation</td>
+                            <td>种族隔离</td>
+                            <td>/ˌseɡrɪˈɡeɪʃn/</td>
+                        </tr>
+                        <tr>
+                            <td>Plaintiff</td>
+                            <td>原告</td>
+                            <td>/ˈpleɪntɪf/</td>
+                        </tr>
+                        <tr>
+                            <td>Defendant</td>
+                            <td>被告</td>
+                            <td>/dɪˈfendənt/</td>
+                        </tr>
+                        <tr>
+                            <td>Constitution</td>
+                            <td>宪法</td>
+                            <td>/ˌkɒnstɪˈtjuːʃn/</td>
+                        </tr>
+                        <tr>
+                            <td>Amendment</td>
+                            <td>修正案</td>
+                            <td>/əˈmendmənt/</td>
+                        </tr>
+                        <tr>
+                            <td>Precedent</td>
+                            <td>判例</td>
+                            <td>/ˈpresɪdənt/</td>
+                        </tr>
+                        <tr>
+                            <td>Jurisdiction</td>
+                            <td>管辖权</td>
+                            <td>/ˌdʒʊərɪsˈdɪkʃn/</td>
+                        </tr>
+                        <tr>
+                            <td>Discrimination</td>
+                            <td>歧视</td>
+                            <td>/dɪˌskrɪmɪˈneɪʃn/</td>
+                        </tr>
+                        <tr>
+                            <td>Integration</td>
+                            <td>融合</td>
+                            <td>/ˌɪntɪˈɡreɪʃn/</td>
+                        </tr>
+                        <tr>
+                            <td>Equal Protection</td>
+                            <td>平等保护</td>
+                            <td>/ˈiːkwəl prəˈtekʃn/</td>
+                        </tr>
+                        <tr>
+                            <td>Due Process</td>
+                            <td>正当程序</td>
+                            <td>/djuː ˈprəʊses/</td>
+                        </tr>
+                        <tr>
+                            <td>Civil Rights</td>
+                            <td>民权</td>
+                            <td>/ˈsɪvl raɪts/</td>
+                        </tr>
+                        <tr>
+                            <td>Unanimous</td>
+                            <td>一致同意的</td>
+                            <td>/juˈnænɪməs/</td>
+                        </tr>
+                        <tr>
+                            <td>Landmark Case</td>
+                            <td>里程碑案件</td>
+                            <td>/ˈlændmɑːk keɪs/</td>
+                        </tr>
+                        <tr>
+                            <td>Supreme Court</td>
+                            <td>最高法院</td>
+                            <td>/suːˈpriːm kɔːt/</td>
+                        </tr>
+                        <tr>
+                            <td>Judicial Review</td>
+                            <td>司法审查</td>
+                            <td>/dʒuˈdɪʃl rɪˈvjuː/</td>
+                        </tr>
+                        <tr>
+                            <td>Constitutional</td>
+                            <td>合宪的</td>
+                            <td>/ˌkɒnstɪˈtjuːʃənl/</td>
+                        </tr>
+                        <tr>
+                            <td>Inherent</td>
+                            <td>固有的</td>
+                            <td>/ɪnˈhɪərənt/</td>
+                        </tr>
+                        <tr>
+                            <td>Stigma</td>
+                            <td>污名</td>
+                            <td>/ˈstɪɡmə/</td>
+                        </tr>
+                        <tr>
+                            <td>Psychological</td>
+                            <td>心理的</td>
+                            <td>/ˌsaɪkəˈlɒdʒɪkl/</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3 style="color: var(--accent-gold); margin: 3rem 0 1rem;">法律短语 Legal Phrases</h3>
+                <div class="phrase-cards">
+                    <div class="phrase-card">
+                        <h4>Separate but equal</h4>
+                        <p style="color: var(--text-secondary);">隔离但平等 - 被本案推翻的法律原则</p>
+                    </div>
+                    <div class="phrase-card">
+                        <h4>Equal protection of the laws</h4>
+                        <p style="color: var(--text-secondary);">法律的平等保护 - 宪法第十四修正案条款</p>
+                    </div>
+                    <div class="phrase-card">
+                        <h4>Deprive of equal opportunities</h4>
+                        <p style="color: var(--text-secondary);">剥夺平等机会 - 隔离对教育机会的影响</p>
+                    </div>
+                    <div class="phrase-card">
+                        <h4>Generate a feeling of inferiority</h4>
+                        <p style="color: var(--text-secondary);">产生自卑感 - 种族隔离的心理影响</p>
+                    </div>
+                    <div class="phrase-card">
+                        <h4>Inherently unequal</h4>
+                        <p style="color: var(--text-secondary);">固有地不平等 - 隔离教育的本质</p>
+                    </div>
+                    <div class="phrase-card">
+                        <h4>Class action lawsuit</h4>
+                        <p style="color: var(--text-secondary);">集体诉讼 - 本案的诉讼形式</p>
+                    </div>
+                    <div class="phrase-card">
+                        <h4>Unanimous decision</h4>
+                        <p style="color: var(--text-secondary);">一致裁决 - 最高法院9-0的判决</p>
+                    </div>
+                    <div class="phrase-card">
+                        <h4>Judicial precedent</h4>
+                        <p style="color: var(--text-secondary);">司法判例 - 对后续案件的法律约束</p>
+                    </div>
+                    <div class="phrase-card">
+                        <h4>Constitutional violation</h4>
+                        <p style="color: var(--text-secondary);">违宪 - 违反宪法规定的行为</p>
+                    </div>
+                    <div class="phrase-card">
+                        <h4>School desegregation</h4>
+                        <p style="color: var(--text-secondary);">学校废除种族隔离 - 判决的执行要求</p>
+                    </div>
+                </div>
+
+                <h3 style="color: var(--accent-gold); margin: 3rem 0 1rem;">典型句型 Sentence Patterns</h3>
+                <div class="sentence-patterns">
+                    <div class="pattern-item">
+                        <div class="english">"Segregation of children in public schools solely on the basis of race deprives the children of the minority group of equal educational opportunities."</div>
+                        <div class="chinese">"仅仅基于种族的公立学校儿童隔离剥夺了少数族裔儿童平等的教育机会。"</div>
+                    </div>
+                    <div class="pattern-item">
+                        <div class="english">"Separate educational facilities are inherently unequal."</div>
+                        <div class="chinese">"分离的教育设施固有地是不平等的。"</div>
+                    </div>
+                    <div class="pattern-item">
+                        <div class="english">"The doctrine of 'separate but equal' has no place in the field of public education."</div>
+                        <div class="chinese">"'隔离但平等'的原则在公共教育领域没有立足之地。"</div>
+                    </div>
+                    <div class="pattern-item">
+                        <div class="english">"We conclude that in the field of public education the doctrine of 'separate but equal' has no place."</div>
+                        <div class="chinese">"我们得出结论，在公共教育领域，'隔离但平等'的原则没有立足之地。"</div>
+                    </div>
+                    <div class="pattern-item">
+                        <div class="english">"To separate them from others of similar age and qualifications solely because of their race generates a feeling of inferiority."</div>
+                        <div class="chinese">"仅仅因为他们的种族而将同龄且资质相似的其他人分开，会产生自卑感。"</div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="fade-in" style="margin-top: 4rem;">
+                <div class="card">
+                    <h3 style="color: var(--accent-blue); margin-bottom: 1rem;">Interactive Learning Features</h3>
+                    <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+                        点击上方的法律要素卡片可以听到相关术语的发音，使用音频控制按钮可以控制背景音乐。所有卡片都支持悬停效果，提供视觉反馈。
+                    </p>
+                    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                        <button class="interactive-btn" onclick="toggleQuiz()">开始测验</button>
+                        <button class="interactive-btn" onclick="showTimeline()">时间线</button>
+                        <button class="interactive-btn" onclick="showCases()">相关案例</button>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <div class="audio-controls">
+        <button class="audio-btn" onclick="toggleMusic()" title="播放/暂停背景音乐">🎵</button>
+        <button class="audio-btn" onclick="toggleSound()" title="开启/关闭音效">🔊</button>
+    </div>
+
+    <script>
+        // 音效控制
+        let soundEnabled = true;
+        let musicPlaying = false;
+        
+        // 创建音频上下文
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        
+        function playSound(type) {
+            if (!soundEnabled) return;
+            
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            // 不同音效频率
+            const frequencies = {
+                case: 523.25,    // C5
+                facts: 587.33,   // D5
+                issue: 659.25,   // E5
+                holding: 698.46, // F5
+                rationale: 783.99, // G5
+                precedent: 880.00  // A5
+            };
+            
+            oscillator.frequency.value = frequencies[type] || 440;
+            oscillator.type = 'sine';
+            
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.5);
+        }
+        
+        function toggleMusic() {
+            musicPlaying = !musicPlaying;
+            if (musicPlaying) {
+                // 播放背景音乐（模拟）
+                console.log('背景音乐开始播放');
+            } else {
+                console.log('背景音乐已暂停');
+            }
+        }
+        
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            alert(soundEnabled ? '音效已开启' : '音效已关闭');
+        }
+        
+        // 交互功能
+        function showDetail(type) {
+            const details = {
+                impact: 'Brown案推动了美国民权运动的发展，为后续的反歧视立法奠定了基础。',
+                legal: '本案确立了"隔离即不平等"的法律原则，推翻了长达58年的Plessy案判例。',
+                enforcement: '判决执行面临巨大阻力，南方各州通过各种方式抵制学校融合。'
+            };
+            alert(details[type]);
+        }
+        
+        function toggleQuiz() {
+            alert('测验功能开发中...\n\n试试这些题目：\n1. Brown案推翻了哪个先例？\n2. 首席大法官是谁？\n3. 判决是哪一年作出的？');
+        }
+        
+        function showTimeline() {
+            alert('Brown案重要时间节点：\n\n1951年 - 案件提起\n1952年 - 首次辩论\n1953年 - 重新辩论\n1954年5月17日 - 作出判决\n1955年 - 执行命令');
+        }
+        
+        function showCases() {
+            alert('相关重要案例：\n\n• Plessy v. Ferguson (1896)\n• Sweatt v. Painter (1950)\n• McLaurin v. Oklahoma (1950)\n• Bolling v. Sharpe (1954)');
+        }
+        
+        // 滚动动画
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+        
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('fade-in');
+                }
+            });
+        }, observerOptions);
+        
+        document.querySelectorAll('section').forEach(section => {
+            observer.observe(section);
+        });
+        
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+        
+        // 页面加载动画
+        window.addEventListener('load', () => {
+            document.body.style.opacity = '0';
+            document.body.style.transition = 'opacity 1s ease-in-out';
+            setTimeout(() => {
+                document.body.style.opacity = '1';
+            }, 100);
+        });
+    </script>
+</body>
+</html>
